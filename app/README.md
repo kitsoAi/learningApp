@@ -1,2 +1,2 @@
-# Duolingo application interface with Flutter.
+# SetswaLingo application interface with Flutter.
 
