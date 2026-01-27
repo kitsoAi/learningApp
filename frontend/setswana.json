@@ -1,0 +1,1285 @@
+{
+  "course": {
+    "title": "Learn Setswana",
+    "description": "Learn Setswana, one of the Bantu language groups, mostly spoken in Botswana, South Africa and Namibia. Perfect for beginners with little or no exposure to the language.",
+    "image_src": "/flags/bw.svg"
+  },
+  "units": [
+    {
+      "title": "Unit 1: Basics & Greetings",
+      "description": "Master basic pronunciation, greetings, and introductions in Setswana",
+      "order_index": 1,
+      "lessons": [
+        {
+          "title": "Pronunciation Guide",
+          "order_index": 1,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "How do you pronounce 'a' in Setswana?",
+              "order_index": 1,
+              "options": [
+                {"text": "Like 'a' in father", "correct": true},
+                {"text": "Like 'a' in cat", "correct": false},
+                {"text": "Like 'a' in cake", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'batho' mean?",
+              "order_index": 2,
+              "options": [
+                {"text": "People", "correct": true},
+                {"text": "Water", "correct": false},
+                {"text": "House", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "How is 'e' pronounced in 'pele'?",
+              "order_index": 3,
+              "options": [
+                {"text": "Like 'ey' in they", "correct": true},
+                {"text": "Like 'e' in pet", "correct": false},
+                {"text": "Like 'ee' in deep", "correct": false}
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Formal Greetings",
+          "order_index": 2,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "How do you greet a man formally?",
+              "order_index": 1,
+              "options": [
+                {"text": "Dumêla rra", "correct": true},
+                {"text": "Dumêla mma", "correct": false},
+                {"text": "Le kae", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'o tsogile jang?' mean?",
+              "order_index": 2,
+              "options": [
+                {"text": "How are you?", "correct": true},
+                {"text": "Where are you from?", "correct": false},
+                {"text": "What is your name?", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "How do you respond to 'o tsogile jang?'",
+              "order_index": 3,
+              "options": [
+                {"text": "Ke tsogile sentle", "correct": true},
+                {"text": "Dumêla rra", "correct": false},
+                {"text": "Go siame", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "How do you greet a group?",
+              "order_index": 4,
+              "options": [
+                {"text": "Dumêlang borra le bomma", "correct": true},
+                {"text": "Dumêla rra", "correct": false},
+                {"text": "Le kae", "correct": false}
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Informal Greetings",
+          "order_index": 3,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "What is the informal way to ask 'How are you?'",
+              "order_index": 1,
+              "options": [
+                {"text": "Le kae?", "correct": true},
+                {"text": "O tsogile jang?", "correct": false},
+                {"text": "O mang?", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "How do you respond to 'Le kae?'",
+              "order_index": 2,
+              "options": [
+                {"text": "Re teng", "correct": true},
+                {"text": "Ke tsogile sentle", "correct": false},
+                {"text": "Dumêla", "correct": false}
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Introductions",
+          "order_index": 4,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "How do you say 'My name is Itumeleng'?",
+              "order_index": 1,
+              "options": [
+                {"text": "Leina lame ke Itumeleng", "correct": true},
+                {"text": "Ke tswa kwa Botswana", "correct": false},
+                {"text": "O mang?", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'o tswa kae?' mean?",
+              "order_index": 2,
+              "options": [
+                {"text": "Where are you from?", "correct": true},
+                {"text": "What is your name?", "correct": false},
+                {"text": "How are you?", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "How do you say 'I am from Botswana'?",
+              "order_index": 3,
+              "options": [
+                {"text": "Ke tswa kwa Botswana", "correct": true},
+                {"text": "Leina lame ke Botswana", "correct": false},
+                {"text": "Ke moithaopi", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'ke moithaopi' mean?",
+              "order_index": 4,
+              "options": [
+                {"text": "I am a volunteer", "correct": true},
+                {"text": "I am from America", "correct": false},
+                {"text": "My name is", "correct": false}
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Goodbyes",
+          "order_index": 5,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "How do you say 'Good-bye'?",
+              "order_index": 1,
+              "options": [
+                {"text": "Go siame", "correct": true},
+                {"text": "Dumêla", "correct": false},
+                {"text": "Re teng", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'robala sentle' mean?",
+              "order_index": 2,
+              "options": [
+                {"text": "Good night", "correct": true},
+                {"text": "Good morning", "correct": false},
+                {"text": "See you tomorrow", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "How do you say 'See you tomorrow'?",
+              "order_index": 3,
+              "options": [
+                {"text": "Ke tla go bôna kamoso", "correct": true},
+                {"text": "Robala sentle", "correct": false},
+                {"text": "Go siame", "correct": false}
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Unit 2: Essential Verbs",
+      "description": "Learn common verbs and how to use them in daily conversation",
+      "order_index": 2,
+      "lessons": [
+        {
+          "title": "Common Verbs - Part 1",
+          "order_index": 1,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "What does 'go bua' mean?",
+              "order_index": 1,
+              "options": [
+                {"text": "To speak", "correct": true},
+                {"text": "To eat", "correct": false},
+                {"text": "To sleep", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What is the verb 'to eat' in Setswana?",
+              "order_index": 2,
+              "options": [
+                {"text": "go ja", "correct": true},
+                {"text": "go nwa", "correct": false},
+                {"text": "go bua", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'go robala' mean?",
+              "order_index": 3,
+              "options": [
+                {"text": "To sleep", "correct": true},
+                {"text": "To wake up", "correct": false},
+                {"text": "To work", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What is 'to go' in Setswana?",
+              "order_index": 4,
+              "options": [
+                {"text": "go ya", "correct": true},
+                {"text": "go tla", "correct": false},
+                {"text": "go tswa", "correct": false}
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Common Verbs - Part 2",
+          "order_index": 2,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "What does 'go ithuta' mean?",
+              "order_index": 1,
+              "options": [
+                {"text": "To learn/study", "correct": true},
+                {"text": "To teach", "correct": false},
+                {"text": "To write", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What is 'to help' in Setswana?",
+              "order_index": 2,
+              "options": [
+                {"text": "go thusa", "correct": true},
+                {"text": "go dira", "correct": false},
+                {"text": "go kopa", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'go rêka' mean?",
+              "order_index": 3,
+              "options": [
+                {"text": "To buy", "correct": true},
+                {"text": "To sell", "correct": false},
+                {"text": "To give", "correct": false}
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Using Verbs in Sentences",
+          "order_index": 3,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "What does 'ke ithuta Setswana' mean?",
+              "order_index": 1,
+              "options": [
+                {"text": "I am learning Setswana", "correct": true},
+                {"text": "I speak Setswana", "correct": false},
+                {"text": "I teach Setswana", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "How do you say 'I am eating'?",
+              "order_index": 2,
+              "options": [
+                {"text": "Ke a ja", "correct": true},
+                {"text": "Ke a nwa", "correct": false},
+                {"text": "Ke a apaya", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'ke tlhapa phakela' mean?",
+              "order_index": 3,
+              "options": [
+                {"text": "I bathe in the morning", "correct": true},
+                {"text": "I sleep in the morning", "correct": false},
+                {"text": "I eat in the morning", "correct": false}
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Unit 3: Useful Expressions",
+      "description": "Master everyday expressions and common phrases",
+      "order_index": 3,
+      "lessons": [
+        {
+          "title": "Basic Needs",
+          "order_index": 1,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "How do you say 'I am hungry'?",
+              "order_index": 1,
+              "options": [
+                {"text": "Ke tshwerwe ke tlala", "correct": true},
+                {"text": "Ke lapile", "correct": false},
+                {"text": "Ke a otsêla", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'ke lapile' mean?",
+              "order_index": 2,
+              "options": [
+                {"text": "I am tired", "correct": true},
+                {"text": "I am hungry", "correct": false},
+                {"text": "I am thirsty", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "How do you say 'I am thirsty'?",
+              "order_index": 3,
+              "options": [
+                {"text": "Ke tshwere ke lenyora", "correct": true},
+                {"text": "Ke tshwerwe ke tlala", "correct": false},
+                {"text": "Ke a otsêla", "correct": false}
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Asking Questions",
+          "order_index": 2,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "What does 'o ya kae?' mean?",
+              "order_index": 1,
+              "options": [
+                {"text": "Where are you going?", "correct": true},
+                {"text": "Where do you live?", "correct": false},
+                {"text": "When are you coming?", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "How do you ask 'When are you coming?'",
+              "order_index": 2,
+              "options": [
+                {"text": "O tla leng?", "correct": true},
+                {"text": "O ya kae?", "correct": false},
+                {"text": "O nna kae?", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'ga ke tlhaloganye' mean?",
+              "order_index": 3,
+              "options": [
+                {"text": "I don't understand", "correct": true},
+                {"text": "I don't know", "correct": false},
+                {"text": "I don't want", "correct": false}
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Polite Expressions",
+          "order_index": 3,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "How do you say 'Please'?",
+              "order_index": 1,
+              "options": [
+                {"text": "Tswêê-tswêê", "correct": true},
+                {"text": "Ke itumetse", "correct": false},
+                {"text": "Intshwarele", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'intshwarele' mean?",
+              "order_index": 2,
+              "options": [
+                {"text": "Excuse me", "correct": true},
+                {"text": "Thank you", "correct": false},
+                {"text": "Please", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "How do you say 'Speak slowly'?",
+              "order_index": 3,
+              "options": [
+                {"text": "Bua ka bonya", "correct": true},
+                {"text": "Bua ka bonako", "correct": false},
+                {"text": "Reetsa", "correct": false}
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Unit 4: Vocabulary Essentials",
+      "description": "Build your vocabulary with common nouns and household items",
+      "order_index": 4,
+      "lessons": [
+        {
+          "title": "Kitchen Items",
+          "order_index": 1,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "What is 'table' in Setswana?",
+              "order_index": 1,
+              "options": [
+                {"text": "tafole", "correct": true},
+                {"text": "setilô", "correct": false},
+                {"text": "sejana", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'sejana' mean?",
+              "order_index": 2,
+              "options": [
+                {"text": "Plate", "correct": true},
+                {"text": "Cup", "correct": false},
+                {"text": "Spoon", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What is 'knife' in Setswana?",
+              "order_index": 3,
+              "options": [
+                {"text": "thipa", "correct": true},
+                {"text": "leswana", "correct": false},
+                {"text": "kopi", "correct": false}
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Bedroom Items",
+          "order_index": 2,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "What is 'bed' in Setswana?",
+              "order_index": 1,
+              "options": [
+                {"text": "bolao", "correct": true},
+                {"text": "kobô", "correct": false},
+                {"text": "diaparô", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'diaparô' mean?",
+              "order_index": 2,
+              "options": [
+                {"text": "Clothes", "correct": true},
+                {"text": "Blanket", "correct": false},
+                {"text": "Shoes", "correct": false}
+              ]
+            }
+          ]
+        },
+        {
+          "title": "School Supplies",
+          "order_index": 3,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "What is 'book' in Setswana?",
+              "order_index": 1,
+              "options": [
+                {"text": "buka", "correct": true},
+                {"text": "pênê", "correct": false},
+                {"text": "pensele", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'pensele' mean?",
+              "order_index": 2,
+              "options": [
+                {"text": "Pencil", "correct": true},
+                {"text": "Pen", "correct": false},
+                {"text": "Book", "correct": false}
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Unit 5: Grammar Basics",
+      "description": "Learn pronouns, negation, and sentence structure",
+      "order_index": 5,
+      "lessons": [
+        {
+          "title": "Pronouns",
+          "order_index": 1,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "What is 'I' in Setswana?",
+              "order_index": 1,
+              "options": [
+                {"text": "nna", "correct": true},
+                {"text": "wêna", "correct": false},
+                {"text": "ênê", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'rona' mean?",
+              "order_index": 2,
+              "options": [
+                {"text": "We/us", "correct": true},
+                {"text": "You (plural)", "correct": false},
+                {"text": "They", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What is 'they' in Setswana?",
+              "order_index": 3,
+              "options": [
+                {"text": "bônê", "correct": true},
+                {"text": "lona", "correct": false},
+                {"text": "wêna", "correct": false}
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Connecting Words",
+          "order_index": 2,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "What is 'and' in Setswana?",
+              "order_index": 1,
+              "options": [
+                {"text": "le", "correct": true},
+                {"text": "mme", "correct": false},
+                {"text": "kgotsa", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'mme' mean?",
+              "order_index": 2,
+              "options": [
+                {"text": "But", "correct": true},
+                {"text": "And", "correct": false},
+                {"text": "Or", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "How do you say 'because' in Setswana?",
+              "order_index": 3,
+              "options": [
+                {"text": "Ka gore", "correct": true},
+                {"text": "Ka jalo", "correct": false},
+                {"text": "jaaka", "correct": false}
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Negation",
+          "order_index": 3,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "How do you say 'I don't want'?",
+              "order_index": 1,
+              "options": [
+                {"text": "Ga ke batle", "correct": true},
+                {"text": "Ke a batla", "correct": false},
+                {"text": "Ke ne ke batla", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'ga ke rate kofi' mean?",
+              "order_index": 2,
+              "options": [
+                {"text": "I don't like coffee", "correct": true},
+                {"text": "I like coffee", "correct": false},
+                {"text": "I want coffee", "correct": false}
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Unit 6: Food & Family",
+      "description": "Learn food vocabulary and family terms",
+      "order_index": 6,
+      "lessons": [
+        {
+          "title": "Food Items",
+          "order_index": 1,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "What is 'water' in Setswana?",
+              "order_index": 1,
+              "options": [
+                {"text": "metsi", "correct": true},
+                {"text": "mashi", "correct": false},
+                {"text": "kofi", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'borotho' mean?",
+              "order_index": 2,
+              "options": [
+                {"text": "Bread", "correct": true},
+                {"text": "Milk", "correct": false},
+                {"text": "Eggs", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What is 'sugar' in Setswana?",
+              "order_index": 3,
+              "options": [
+                {"text": "sukiri", "correct": true},
+                {"text": "letswai", "correct": false},
+                {"text": "tee", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'mae' mean?",
+              "order_index": 4,
+              "options": [
+                {"text": "Eggs", "correct": true},
+                {"text": "Beans", "correct": false},
+                {"text": "Peanuts", "correct": false}
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Family Members",
+          "order_index": 2,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "What is 'father' in Setswana?",
+              "order_index": 1,
+              "options": [
+                {"text": "ntate", "correct": true},
+                {"text": "mmê", "correct": false},
+                {"text": "nkuku", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'nkuku' mean?",
+              "order_index": 2,
+              "options": [
+                {"text": "Grandmother", "correct": true},
+                {"text": "Grandfather", "correct": false},
+                {"text": "Mother", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What is 'child/children' in Setswana?",
+              "order_index": 3,
+              "options": [
+                {"text": "ngwana/bana", "correct": true},
+                {"text": "batsadi", "correct": false},
+                {"text": "kgaitsadi", "correct": false}
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Unit 7: Time & Places",
+      "description": "Learn time expressions and common places",
+      "order_index": 7,
+      "lessons": [
+        {
+          "title": "Time Expressions",
+          "order_index": 1,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "What is 'today' in Setswana?",
+              "order_index": 1,
+              "options": [
+                {"text": "gompieno", "correct": true},
+                {"text": "maabane", "correct": false},
+                {"text": "kamoso", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'kamoso' mean?",
+              "order_index": 2,
+              "options": [
+                {"text": "Tomorrow", "correct": true},
+                {"text": "Yesterday", "correct": false},
+                {"text": "Today", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What is 'in the morning' in Setswana?",
+              "order_index": 3,
+              "options": [
+                {"text": "phakêla", "correct": true},
+                {"text": "bosigo", "correct": false},
+                {"text": "motshegare", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'bosigo' mean?",
+              "order_index": 4,
+              "options": [
+                {"text": "At night", "correct": true},
+                {"text": "In the morning", "correct": false},
+                {"text": "At noon", "correct": false}
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Common Places",
+          "order_index": 2,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "What is 'school' in Setswana?",
+              "order_index": 1,
+              "options": [
+                {"text": "sekolo", "correct": true},
+                {"text": "sepatela", "correct": false},
+                {"text": "shopo", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'sepatela' mean?",
+              "order_index": 2,
+              "options": [
+                {"text": "Hospital", "correct": true},
+                {"text": "Clinic", "correct": false},
+                {"text": "School", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What is 'church' in Setswana?",
+              "order_index": 3,
+              "options": [
+                {"text": "kêrêkê", "correct": true},
+                {"text": "banka", "correct": false},
+                {"text": "poso", "correct": false}
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Unit 8: Health & Safety",
+      "description": "Essential phrases for health and emergency situations",
+      "order_index": 8,
+      "lessons": [
+        {
+          "title": "Health Expressions",
+          "order_index": 1,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "How do you say 'I am not well'?",
+              "order_index": 1,
+              "options": [
+                {"text": "Ke a lwala", "correct": true},
+                {"text": "Ke tsogile sentle", "correct": false},
+                {"text": "Ke lapile", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'ke opiwa ke tlhogo' mean?",
+              "order_index": 2,
+              "options": [
+                {"text": "I have a headache", "correct": true},
+                {"text": "My stomach hurts", "correct": false},
+                {"text": "I am sick", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What is 'clinic' in Setswana?",
+              "order_index": 3,
+              "options": [
+                {"text": "kokelwana", "correct": true},
+                {"text": "sepatela", "correct": false},
+                {"text": "sekolo", "correct": false}
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Safety Expressions",
+          "order_index": 2,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "How do you say 'Help me'?",
+              "order_index": 1,
+              "options": [
+                {"text": "Nthuse", "correct": true},
+                {"text": "Ke kopa thuso", "correct": false},
+                {"text": "Dumêla", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'ke tlhasetswe' mean?",
+              "order_index": 2,
+              "options": [
+                {"text": "I have been attacked", "correct": true},
+                {"text": "I need help", "correct": false},
+                {"text": "I have been robbed", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "How do you say 'I need help'?",
+              "order_index": 3,
+              "options": [
+                {"text": "Ke kopa thuso", "correct": true},
+                {"text": "Nthuse", "correct": false},
+                {"text": "Ke thukuthilwe", "correct": false}
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Unit 9: Weather & Activities",
+      "description": "Talk about weather and daily activities",
+      "order_index": 9,
+      "lessons": [
+        {
+          "title": "Weather Expressions",
+          "order_index": 1,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "How do you say 'Today it is cold'?",
+              "order_index": 1,
+              "options": [
+                {"text": "Gompieno go serame", "correct": true},
+                {"text": "Gompieno go mogôte", "correct": false},
+                {"text": "Go bothithô", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'go mogôte' mean?",
+              "order_index": 2,
+              "options": [
+                {"text": "It is hot", "correct": true},
+                {"text": "It is cold", "correct": false},
+                {"text": "It is warm", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What is 'summer' in Setswana?",
+              "order_index": 3,
+              "options": [
+                {"text": "selemô", "correct": true},
+                {"text": "mariga", "correct": false},
+                {"text": "pula", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'go letsatsi' mean?",
+              "order_index": 4,
+              "options": [
+                {"text": "It is sunny", "correct": true},
+                {"text": "It is windy", "correct": false},
+                {"text": "It is hot", "correct": false}
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Daily Activities",
+          "order_index": 2,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "What does 'Ke tsoga ka 6 phakela' mean?",
+              "order_index": 1,
+              "options": [
+                {"text": "I wake up at 6am", "correct": true},
+                {"text": "I sleep at 6am", "correct": false},
+                {"text": "I eat at 6am", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "How do you say 'Then I go to school'?",
+              "order_index": 2,
+              "options": [
+                {"text": "Ke ya sekolong", "correct": true},
+                {"text": "Ke a tlhapa", "correct": false},
+                {"text": "Ke bo ke ja", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'Ke ne ke itumetse gompieno' mean?",
+              "order_index": 3,
+              "options": [
+                {"text": "I was excited today", "correct": true},
+                {"text": "I was tired today", "correct": false},
+                {"text": "I was sick today", "correct": false}
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Unit 10: Shopping & Prices",
+      "description": "Learn to ask for prices and shop in Setswana",
+      "order_index": 10,
+      "lessons": [
+        {
+          "title": "Asking for Prices",
+          "order_index": 1,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "How do you ask 'How much is it?'",
+              "order_index": 1,
+              "options": [
+                {"text": "Ke bokae?", "correct": true},
+                {"text": "Ke eng?", "correct": false},
+                {"text": "O batla eng?", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'madi otlhe ke bokae?' mean?",
+              "order_index": 2,
+              "options": [
+                {"text": "What's the total price?", "correct": true},
+                {"text": "How much is it?", "correct": false},
+                {"text": "Do you want money?", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'e le nngwe' mean in context of prices?",
+              "order_index": 3,
+              "options": [
+                {"text": "Each one", "correct": true},
+                {"text": "All of them", "correct": false},
+                {"text": "Two of them", "correct": false}
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Expressing Needs",
+          "order_index": 2,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "How do you ask 'What do you want?'",
+              "order_index": 1,
+              "options": [
+                {"text": "O batla eng?", "correct": true},
+                {"text": "O tlhôka eng?", "correct": false},
+                {"text": "O ya kae?", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'ke tlhoka madi' mean?",
+              "order_index": 2,
+              "options": [
+                {"text": "I need money", "correct": true},
+                {"text": "I want money", "correct": false},
+                {"text": "I have money", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "How do you say 'I want to go home'?",
+              "order_index": 3,
+              "options": [
+                {"text": "Ke batla go ya kwa lapeng", "correct": true},
+                {"text": "Ke ya lapeng", "correct": false},
+                {"text": "Ke nna lapeng", "correct": false}
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Unit 11: Question Words & Commands",
+      "description": "Master asking questions and giving commands",
+      "order_index": 11,
+      "lessons": [
+        {
+          "title": "Question Words",
+          "order_index": 1,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "What does 'eng?' mean?",
+              "order_index": 1,
+              "options": [
+                {"text": "What?", "correct": true},
+                {"text": "Where?", "correct": false},
+                {"text": "Who?", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "How do you ask 'Where?'",
+              "order_index": 2,
+              "options": [
+                {"text": "Kae?", "correct": true},
+                {"text": "Leng?", "correct": false},
+                {"text": "Mang?", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'o mang?' mean?",
+              "order_index": 3,
+              "options": [
+                {"text": "Who are you?", "correct": true},
+                {"text": "What is it?", "correct": false},
+                {"text": "Where are you?", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "How do you ask 'Why?'",
+              "order_index": 4,
+              "options": [
+                {"text": "Reng? / Go reng?", "correct": true},
+                {"text": "Jang?", "correct": false},
+                {"text": "Leng?", "correct": false}
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Commands",
+          "order_index": 2,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "How do you say 'Open the door'?",
+              "order_index": 1,
+              "options": [
+                {"text": "Bula lebati", "correct": true},
+                {"text": "Tswala lebati", "correct": false},
+                {"text": "Tsêna mo teng", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'nna fatshe' mean?",
+              "order_index": 2,
+              "options": [
+                {"text": "Sit down", "correct": true},
+                {"text": "Stand up", "correct": false},
+                {"text": "Come here", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "How do you say 'Come here'?",
+              "order_index": 3,
+              "options": [
+                {"text": "Tlaa kwano", "correct": true},
+                {"text": "Boela kwa morago", "correct": false},
+                {"text": "Tlaa kwa pele", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'didimala' mean?",
+              "order_index": 4,
+              "options": [
+                {"text": "Keep quiet", "correct": true},
+                {"text": "Listen", "correct": false},
+                {"text": "Speak", "correct": false}
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Unit 12: Advanced Conversations",
+      "description": "Practice complex sentences and real-world scenarios",
+      "order_index": 12,
+      "lessons": [
+        {
+          "title": "Verb Tenses Practice",
+          "order_index": 1,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "What is the past tense of 'go ja' (to eat)?",
+              "order_index": 1,
+              "options": [
+                {"text": "jele", "correct": true},
+                {"text": "ja", "correct": false},
+                {"text": "tlaa ja", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "How do you say 'I will want' in Setswana?",
+              "order_index": 2,
+              "options": [
+                {"text": "Ke tlaa batla", "correct": true},
+                {"text": "Ke a batla", "correct": false},
+                {"text": "Ke ne ke batla", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'o ne o batla' mean?",
+              "order_index": 3,
+              "options": [
+                {"text": "You did want", "correct": true},
+                {"text": "You want", "correct": false},
+                {"text": "You will want", "correct": false}
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Tonal Differences",
+          "order_index": 2,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "What does 'lapa' with low tone mean?",
+              "order_index": 1,
+              "options": [
+                {"text": "Home", "correct": true},
+                {"text": "To be tired", "correct": false},
+                {"text": "Family", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'gôga' with high tone mean?",
+              "order_index": 2,
+              "options": [
+                {"text": "To pull", "correct": true},
+                {"text": "To smoke", "correct": false},
+                {"text": "To push", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "The word 'utlwa' can mean three things. Which is NOT one of them?",
+              "order_index": 3,
+              "options": [
+                {"text": "To see", "correct": true},
+                {"text": "To feel", "correct": false},
+                {"text": "To hear", "correct": false}
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Real-World Scenarios",
+          "order_index": 3,
+          "challenges": [
+            {
+              "type": "SELECT",
+              "question": "If someone asks 'A o na le mathata?', what are they asking?",
+              "order_index": 1,
+              "options": [
+                {"text": "Do you have a problem?", "correct": true},
+                {"text": "Do you have money?", "correct": false},
+                {"text": "Do you have questions?", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "How would you respond 'No, I don't have a problem'?",
+              "order_index": 2,
+              "options": [
+                {"text": "Nnyaa, ga ke na mathata", "correct": true},
+                {"text": "Ee, ke na le mathata", "correct": false},
+                {"text": "Ga ke itse", "correct": false}
+              ]
+            },
+            {
+              "type": "SELECT",
+              "question": "What does 'nako e tsamaile' mean?",
+              "order_index": 3,
+              "options": [
+                {"text": "Time is up", "correct": true},
+                {"text": "Time to go", "correct": false},
+                {"text": "What time is it?", "correct": false}
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
