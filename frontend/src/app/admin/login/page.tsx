@@ -87,7 +87,7 @@ export default function AdminLoginPage() {
           </form>
         </CardContent>
         <CardFooter className="flex justify-center">
-            <Button variant="link" size="sm" onClick={() => router.push("/")}>
+            <Button variant="ghost" size="sm" onClick={() => router.push("/")}>
                 Back to App
             </Button>
         </CardFooter>

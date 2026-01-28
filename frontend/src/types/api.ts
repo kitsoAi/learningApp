@@ -13,6 +13,8 @@ export interface User {
   last_activity_date: string | null;
   longest_streak: number;
   streak_frozen: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 // Auth types

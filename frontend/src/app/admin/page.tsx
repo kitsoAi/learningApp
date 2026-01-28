@@ -189,7 +189,7 @@ export default function AdminPage() {
                 <span>{course.title}</span>
                 <div className="space-x-2">
                     <Button variant="outline" size="sm" onClick={() => openEditModal(course)}>Edit Course</Button>
-                    <Button variant="destructive" size="sm" onClick={() => handleDeleteCourse(course.id)}>Delete</Button>
+                    <Button variant="danger" size="sm" onClick={() => handleDeleteCourse(course.id)}>Delete</Button>
                 </div>
               </CardTitle>
               <CardDescription>{course.description}</CardDescription>
@@ -224,10 +224,10 @@ export default function AdminPage() {
                           <div className="flex justify-between items-start mb-2">
                              <span className="font-semibold text-sm">Lesson {lesson.order_index}: {lesson.title}</span>
                              <div className="flex space-x-1">
-                                <Button variant="ghost" size="xs" className="h-6 w-6 p-0" onClick={() => openEditLessonModal(lesson)}>
+                                <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => openEditLessonModal(lesson)}>
                                     <Edit2 className="h-3 w-3" />
                                 </Button>
-                                <Button variant="ghost" size="xs" className="h-6 w-6 p-0 text-destructive" onClick={() => handleDeleteLesson(lesson.id)}>
+                                <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-destructive" onClick={() => handleDeleteLesson(lesson.id)}>
                                     <Trash2 className="h-3 w-3" />
                                 </Button>
                              </div>

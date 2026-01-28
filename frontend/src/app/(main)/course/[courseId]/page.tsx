@@ -2,12 +2,10 @@
 
 import { useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { useAuthStore } from "@/store/auth";
 
 export default function CourseRedirectPage() {
   const router = useRouter();
   const params = useParams();
-  const { setUser } = useAuthStore();
 
   useEffect(() => {
     const courseId = params.courseId;

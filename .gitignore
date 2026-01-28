@@ -34,3 +34,18 @@ uploads/
 backend/uploads/
 frontend/public/uploads/
 backend/.env
+
+# Docker
+.env.docker
+.env
+docker-compose.override.yml
+
+# Terraform
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/*.tfvars
+terraform/crash.log
+terraform/override.tf
+terraform/*_override.tf
