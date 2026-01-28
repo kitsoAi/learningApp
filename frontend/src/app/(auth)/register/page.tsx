@@ -26,8 +26,9 @@ export default function RegisterPage() {
       await register({ email, password, full_name: fullName });
       toast.success("Account created! Welcome to Puolingo!");
       router.push("/learn");
-    } catch (error: any) {
-      toast.error(error.response?.data?.detail || "Registration failed");
+    } catch (error) {
+      const message = (error as { response?: { data?: { detail?: string } } }).response?.data?.detail || "Registration failed";
+      toast.error(message);
     }
   };
 

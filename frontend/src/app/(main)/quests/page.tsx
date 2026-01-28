@@ -8,9 +8,17 @@ import { StickyWrapper } from "@/components/sticky-wrapper";
 import { UserProgress } from "@/components/user-progress";
 import { useAuthStore } from "@/store/auth";
 
+interface Quest {
+  id: number;
+  title: string;
+  description: string;
+  required_streak: number;
+  completed: boolean;
+}
+
 export default function QuestsPage() {
   const { user } = useAuthStore();
-  const [quests, setQuests] = useState<any[]>([]);
+  const [quests, setQuests] = useState<Quest[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

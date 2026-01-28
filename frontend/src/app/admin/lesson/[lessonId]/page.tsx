@@ -69,9 +69,9 @@ export default function LessonEditorPage() {
       try {
           const { url } = await courseApi.uploadFile(file);
           if (isChallenge) {
-              updateChallengeField(challengeId, field as any, url);
+              updateChallengeField(challengeId, field as keyof Challenge, url);
           } else {
-              updateOptionField(challengeId, optionId, field, url);
+              updateOptionField(challengeId, optionId, field as keyof ChallengeOption, url);
           }
           toast.success("File uploaded successfully");
       } catch (error) {

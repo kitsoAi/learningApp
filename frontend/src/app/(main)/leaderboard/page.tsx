@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { redirect } from "next/navigation";
 import { StickyWrapper } from "@/components/sticky-wrapper";
 import { UserProgress } from "@/components/user-progress";
 import { Promo } from "@/components/promo";
@@ -12,7 +11,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { useAuthStore } from "@/store/auth";
 import { useCourseStore } from "@/store/course";
-import apiClient from "@/lib/api"; // We'll need to add getLeaderboard to api/custom or use direct call
+import { apiClient } from "@/lib/api"; 
 
 // Quick API call within component for now, or move to lib/api
 const getLeaderboard = async () => {
@@ -23,8 +22,16 @@ const getLeaderboard = async () => {
 export default function LeaderboardPage() {
   const { user } = useAuthStore();
   const { activeCourse } = useCourseStore();
-  const [leaderboard, setLeaderboard] = useState<any[]>([]);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
+
+  interface LeaderboardEntry {
+    id: number;
+    full_name?: string;
+    email: string;
+    image_src?: string;
+    xp: number;
+  }
 
   useEffect(() => {
     if (!user || !activeCourse) {

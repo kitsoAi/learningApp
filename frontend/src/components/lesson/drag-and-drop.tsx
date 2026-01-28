@@ -2,13 +2,18 @@
 
 import React, { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { v4 as uuid } from "uuid";
 import { Word } from "./word";
 import { Option } from "./option";
 import services from "@/utils/services";
 
+import { DroppableProvided, DroppableStateSnapshot, DroppableProps } from "react-beautiful-dnd";
+
+interface StrictModeDroppableProps extends Omit<DroppableProps, 'children'> {
+  children: (provided: DroppableProvided, snapshot: DroppableStateSnapshot) => React.ReactElement<HTMLElement>;
+}
+
 // StrictModeDroppable strict mode fix
-export const StrictModeDroppable = ({ children, ...props }: any) => {
+export const StrictModeDroppable = ({ children, ...props }: StrictModeDroppableProps) => {
   const [enabled, setEnabled] = useState(false);
   useEffect(() => {
     const animation = requestAnimationFrame(() => setEnabled(true));
@@ -40,7 +45,7 @@ export const DragAndDrop = ({ options, question, onSelect, disabled }: Props) =>
 
     // Construct "correct" answer items for validation logic (assuming all options needed for now)
     // Real logic would probably rely on a 'correct' sentence structure passed in
-    const correctItems = options.sort((a,b) => a.text.localeCompare(b.text)).map(opt => ({ id: opt.id.toString(), content: opt.text })); 
+    // const correctItems = options.sort((a,b) => a.text.localeCompare(b.text)).map(opt => ({ id: opt.id.toString(), content: opt.text })); 
     
     // Rows state
     const [rows, setRows] = useState({
@@ -52,17 +57,17 @@ export const DragAndDrop = ({ options, question, onSelect, disabled }: Props) =>
         },
     });
 
-    const [winReady, setWinReady] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
     
     useEffect(() => {
-        setWinReady(true);
+        setIsMounted(true);
     }, []);
 
     const checkAnswer = () => {
         // Logic to check if the answer built is correct
         // For basic validation, we check if all items in 'Answer' match correct order/composition
         // This is a placeholder validation
-         const answerContents = rows.Answer.items.map((i: any) => i.content).join(" ");
+         const answerContents = rows.Answer.items.map((i: { content: string }) => i.content).join(" ");
          // We might need a proper "correct answer string" passed as prop
          // For now, let's assume if they used all items, it's correct? Or dummy check.
          // Actually, let's call onSelect(true) if something is in answer for now to unblock flow
@@ -93,7 +98,7 @@ export const DragAndDrop = ({ options, question, onSelect, disabled }: Props) =>
         }
     }, [rows, onSelect]);
 
-    if (!winReady) return null;
+    if (!isMounted) return null;
 
     return (
         <div className="flex flex-col items-center w-full max-w-4xl mx-auto">
@@ -110,7 +115,7 @@ export const DragAndDrop = ({ options, question, onSelect, disabled }: Props) =>
                 {/* Answer Zone */}
                  <div className="min-h-[80px] w-full border-b-2 border-slate-200 mb-10 p-2 flex flex-wrap gap-2 items-center justify-center bg-slate-50 rounded-xl">
                       <StrictModeDroppable droppableId="Answer" direction="horizontal">
-                          {(provided: any) => (
+                          {(provided) => (
                               <div
                                   ref={provided.innerRef}
                                   {...provided.droppableProps}

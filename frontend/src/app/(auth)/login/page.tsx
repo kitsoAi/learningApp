@@ -21,8 +21,9 @@ export default function LoginPage() {
       await login({ username: email, password });
       toast.success("Welcome back!");
       router.push("/learn");
-    } catch (error: unknown) {
-      toast.error((error as any).response?.data?.detail || "Login failed");
+    } catch (error) {
+      const message = (error as { response?: { data?: { detail?: string } } }).response?.data?.detail || "Login failed";
+      toast.error(message);
     }
   };
 
