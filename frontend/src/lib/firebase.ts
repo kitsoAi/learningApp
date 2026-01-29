@@ -11,8 +11,17 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-// Initialize Firebase
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+// Initialize Firebase only if API key is present
+let app;
+if (firebaseConfig.apiKey) {
+  app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+} else {
+  // During build time or if env vars are missing, we might not have the API key.
+  // We initialize with a dummy app or just export empty objects if they are handled.
+  // Note: initializeApp will throw if apiKey is missing.
+  app = !getApps().length ? initializeApp({ ...firebaseConfig, apiKey: "dummy-key" }) : getApp();
+}
+
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 
