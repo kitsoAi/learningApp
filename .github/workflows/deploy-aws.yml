@@ -181,6 +181,7 @@ jobs:
           image: ${{ needs.build-and-push.outputs.backend-image }}
           environment-variables: |
             FIREBASE_PROJECT_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
+            SEED_DATABASE=true
 
       - name: Update Frontend container in task definition
         id: task-def-frontend
