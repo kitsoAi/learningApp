@@ -136,38 +136,69 @@ async def firebase_login(
     request: FirebaseLoginRequest,
     db: AsyncSession = Depends(get_db)
 ) -> Any:
-    payload = await verify_firebase_token(request.token)
-    
-    email = payload.get('email')
-    uid = payload.get('sub')
-    full_name = payload.get('name')
-    picture = payload.get('picture')
-    
-    if not email:
-        raise HTTPException(status_code=400, detail="Email not found in token")
+    try:
+        payload = await verify_firebase_token(request.token)
         
-    auth_service = AuthService(db)
-    user = await auth_service.authenticate_firebase(
-        email=email,
-        uid=uid,
-        full_name=full_name,
-        image_src=picture
-    )
-    
-    access_token = create_access_token(subject=user.id)
-    refresh_token = create_refresh_token(subject=user.id)
-    
-    return {
-        "access_token": access_token, 
-        "token_type": "bearer",
-        "refresh_token": refresh_token
-    }
+        email = payload.get('email')
+        uid = payload.get('sub')
+        full_name = payload.get('name')
+        picture = payload.get('picture')
+        
+        if not email:
+            raise HTTPException(status_code=400, detail="Email not found in token")
+            
+        auth_service = AuthService(db)
+        user = await auth_service.authenticate_firebase(
+            email=email,
+            uid=uid,
+            full_name=full_name,
+            image_src=picture
+        )
+        
+        access_token = create_access_token(subject=user.id)
+        refresh_token = create_refresh_token(subject=user.id)
+        
+        return {
+            "access_token": access_token, 
+            "token_type": "bearer",
+            "refresh_token": refresh_token
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"ERROR: Unexpected error in firebase_login: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Internal Server Error in login: {str(e)}")
 
 @router.get("/debug-config")
-async def debug_config():
-    """Endpoint to debug server environment configuration."""
+async def debug_config(db: AsyncSession = Depends(get_db)):
+    """Endpoint to debug server environment configuration and connectivity."""
+    db_ok = False
+    db_error = None
+    try:
+        from sqlalchemy import text
+        await db.execute(text("SELECT 1"))
+        db_ok = True
+    except Exception as e:
+        db_error = str(e)
+
+    import httpx
+    internet_ok = False
+    internet_error = None
+    try:
+        async with httpx.AsyncClient() as client:
+            resp = await client.get("https://www.google.com", timeout=2.0)
+            internet_ok = resp.status_code == 200
+    except Exception as e:
+        internet_error = str(e)
+
     return {
-        "PROJECT_ID_SET": bool(settings.FIREBASE_PROJECT_ID),
-        "PROJECT_ID_VALUE": settings.FIREBASE_PROJECT_ID if settings.FIREBASE_PROJECT_ID else "NOT_SET",
+        "FIREBASE_PROJECT_ID_SET": bool(settings.FIREBASE_PROJECT_ID),
+        "FIREBASE_PROJECT_ID_VALUE": settings.FIREBASE_PROJECT_ID if settings.FIREBASE_PROJECT_ID else "NOT_SET",
+        "DATABASE_CONNECTED": db_ok,
+        "DATABASE_ERROR": db_error,
+        "INTERNET_ACCESS": internet_ok,
+        "INTERNET_ERROR": internet_error,
         "ALLOWED_ORIGINS": settings.ALLOWED_ORIGINS,
     }
