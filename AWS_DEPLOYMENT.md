@@ -209,7 +209,9 @@ aws elbv2 create-target-group \
 
 # Create Listeners with path-based routing
 aws elbv2 create-listener \
-    --load-balancer-arn arn:aws:elasticloadbalancing:us-east-1:637436418876:loadbalancer/app/learningapp-alb/1e27e1efc818120b \
+    --load-balancer-arn
+    
+    arn:aws:elasticloadbalancing:us-east-1:637436418876:loadbalancer/app/learningapp-alb/1e27e1efc818120b \
     --protocol HTTP \
     --port 80 \
     --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-east-1:637436418876:targetgroup/learningapp-frontend-tg/3197adb882b2e249
