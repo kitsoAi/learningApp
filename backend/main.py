@@ -61,6 +61,17 @@ if settings.ALLOWED_ORIGINS:
         expose_headers=["*"]
     )
 
+@app.exception_handler(Exception)
+async def global_exception_handler(request, exc):
+    import traceback
+    print(f"ERROR: Global exception caught: {str(exc)}")
+    traceback.print_exc()
+    return {
+        "detail": str(exc),
+        "traceback": traceback.format_exc(),
+        "type": type(exc).__name__
+    }
+
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
 # Mount static files for uploads
