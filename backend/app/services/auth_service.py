@@ -45,12 +45,12 @@ class AuthService:
         return db_user
 
     async def authenticate_google(self, email: str, google_id: str, full_name: str, image_src: str) -> User:
+        # Repurposing for backward compatibility or removing
         user = await self.get_user_by_email(email)
         if not user:
-            # Create new user
             db_user = User(
                 email=email,
-                google_id=google_id,
+                firebase_id=google_id, # Link it to firebase_id
                 full_name=full_name,
                 image_src=image_src,
                 is_active=True,
@@ -64,13 +64,55 @@ class AuthService:
             await self.db.refresh(db_user)
             return db_user
         else:
-            # Link Google ID if not linked
-            if not user.google_id:
-                user.google_id = google_id
-                # Update other fields if needed
+            if not user.firebase_id:
+                user.firebase_id = google_id
                 if image_src:
                     user.image_src = image_src
                 self.db.add(user)
                 await self.db.commit()
                 await self.db.refresh(user)
+            return user
+
+    async def authenticate_firebase(self, email: str, uid: str, full_name: str | None, image_src: str | None) -> User:
+        user = await self.get_user_by_email(email)
+        if not user:
+            # Check by uid first to be sure
+            result = await self.db.execute(select(User).where(User.firebase_id == uid))
+            user = result.scalars().first()
+            
+        if not user:
+            # Create new user
+            db_user = User(
+                email=email,
+                firebase_id=uid,
+                full_name=full_name,
+                image_src=image_src,
+                is_active=True,
+                points=0,
+                hearts=5,
+                xp=0,
+                streak_count=0
+            )
+            self.db.add(db_user)
+            await self.db.commit()
+            await self.db.refresh(db_user)
+            return db_user
+        else:
+            # Update user info if missing
+            should_update = False
+            if image_src and not user.image_src:
+                user.image_src = image_src
+                should_update = True
+            if full_name and not user.full_name:
+                user.full_name = full_name
+                should_update = True
+            if not user.firebase_id:
+                user.firebase_id = uid
+                should_update = True
+            
+            if should_update:
+                self.db.add(user)
+                await self.db.commit()
+                await self.db.refresh(user)
+            
             return user

@@ -10,7 +10,7 @@ import { toast } from "sonner";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, isLoading } = useAuthStore();
+  const { login, googleLogin, isLoading } = useAuthStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -95,7 +95,7 @@ export default function LoginPage() {
           type="button"
           variant="default"
           className="w-full mt-6 h-[54px] border-2 border-b-4 text-neutral-700 bg-white hover:bg-slate-100"
-          onClick={() => window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`}
+          onClick={() => googleLogin()}
         >
           <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
             <path

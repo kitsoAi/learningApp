@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { register, isLoading } = useAuthStore();
+  const { register, googleLogin, isLoading } = useAuthStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
@@ -119,7 +119,7 @@ export default function RegisterPage() {
             type="button"
             variant="outline"
             className="w-full mt-4"
-            onClick={() => window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`}
+            onClick={() => googleLogin()}
           >
             <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
               <path

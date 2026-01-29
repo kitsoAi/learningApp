@@ -31,9 +31,12 @@ export const authApi = {
     return response.data;
   },
 
-  // Google OAuth login
-  googleLogin: () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/google`;
+  // Firebase login sync
+  firebaseLogin: async (idToken: string): Promise<AuthResponse> => {
+    const response = await apiClient.post<AuthResponse>('/auth/firebase', {
+      token: idToken,
+    });
+    return response.data;
   },
 };
 

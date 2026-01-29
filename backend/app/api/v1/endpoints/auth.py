@@ -7,18 +7,12 @@ from app.api import dependencies
 from app.core.config import settings
 from app.core.security import create_access_token, create_refresh_token
 from app.db.database import get_db
-from app.schemas.user import Token, UserCreate, User
+from app.schemas.user import Token, UserCreate, User, FirebaseLoginRequest
+import httpx
+from jose import jwt
 from app.services.auth_service import AuthService
 
 router = APIRouter()
-oauth = OAuth()
-oauth.register(
-    name='google',
-    client_id=settings.GOOGLE_CLIENT_ID,
-    client_secret=settings.GOOGLE_CLIENT_SECRET,
-    server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
-    client_kwargs={'scope': 'openid email profile'}
-)
 
 @router.post("/register", response_model=User)
 async def register(
@@ -50,39 +44,6 @@ async def login(
         "refresh_token": refresh_token
     }
 
-@router.get("/google")
-async def google_login(request: Request):
-    redirect_uri = settings.GOOGLE_REDIRECT_URI
-    return await oauth.google.authorize_redirect(request, redirect_uri)
-
-@router.get("/google/callback", response_model=Token)
-async def google_callback(request: Request, db: AsyncSession = Depends(get_db)):
-    token = await oauth.google.authorize_access_token(request)
-    user_info = token.get('userinfo')
-    if not user_info: # explicit check if not automatically in token
-         user_info = await oauth.google.userinfo(token=token)
-         
-    auth_service = AuthService(db)
-    user = await auth_service.authenticate_google(
-        email=user_info['email'],
-        google_id=user_info['sub'],
-        full_name=user_info.get('name'),
-        image_src=user_info.get('picture')
-    )
-    
-    access_token = create_access_token(subject=user.id)
-    refresh_token = create_refresh_token(subject=user.id)
-    # Ideally redirect to frontend with tokens in query params or cookie, 
-    # but requirement says "Redirect to frontend with tokens". 
-    # Returning JSON here isn't a redirect. 
-    # But usually API returns JSON. If this is a browser redirect callback, we should RedirectResponse.
-    # "Redirect to frontend with tokens" -> RedirectResponse(url=f"{FRONTEND_URL}?token=...")
-    from fastapi.responses import RedirectResponse
-    frontend_url = settings.FRONTEND_URL
-    return RedirectResponse(
-        url=f"{frontend_url}/auth/callback?access_token={access_token}&refresh_token={refresh_token}"
-    )
-
 @router.post("/refresh", response_model=Token)
 async def refresh_token_endpoint(
     refresh_token: str,
@@ -106,3 +67,68 @@ async def refresh_token_endpoint(
         }
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid refresh token")
+
+async def verify_firebase_token(token: str):
+    jwks_url = "https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com"
+    async with httpx.AsyncClient() as client:
+        response = await client.get(jwks_url)
+        jwks = response.json()
+    
+    header = jwt.get_unverified_header(token)
+    kid = header.get('kid')
+    
+    if not kid:
+        raise HTTPException(status_code=401, detail="Invalid token header")
+
+    key = None
+    for k in jwks['keys']:
+        if k['kid'] == kid:
+            key = k
+            break
+            
+    if not key:
+        raise HTTPException(status_code=401, detail="Invalid token key")
+    
+    try:
+        payload = jwt.decode(
+            token, 
+            key, 
+            algorithms=['RS256'],
+            audience=settings.FIREBASE_PROJECT_ID,
+            issuer=f"https://securetoken.google.com/{settings.FIREBASE_PROJECT_ID}"
+        )
+        return payload
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=f"Token verification failed: {str(e)}")
+
+@router.post("/firebase", response_model=Token)
+async def firebase_login(
+    request: FirebaseLoginRequest,
+    db: AsyncSession = Depends(get_db)
+) -> Any:
+    payload = await verify_firebase_token(request.token)
+    
+    email = payload.get('email')
+    uid = payload.get('sub')
+    full_name = payload.get('name')
+    picture = payload.get('picture')
+    
+    if not email:
+        raise HTTPException(status_code=400, detail="Email not found in token")
+        
+    auth_service = AuthService(db)
+    user = await auth_service.authenticate_firebase(
+        email=email,
+        uid=uid,
+        full_name=full_name,
+        image_src=picture
+    )
+    
+    access_token = create_access_token(subject=user.id)
+    refresh_token = create_refresh_token(subject=user.id)
+    
+    return {
+        "access_token": access_token, 
+        "token_type": "bearer",
+        "refresh_token": refresh_token
+    }

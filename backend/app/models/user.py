@@ -13,7 +13,7 @@ class User(Base):
     hashed_password: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     is_admin: Mapped[bool] = mapped_column(Boolean, default=False)
-    google_id: Mapped[Optional[str]] = mapped_column(String, unique=True, nullable=True)
+    firebase_id: Mapped[Optional[str]] = mapped_column(String, unique=True, nullable=True)
     image_src: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     
     # Game mechanics

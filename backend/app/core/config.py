@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     FRONTEND_URL: str = "http://localhost:3000"
     ALLOWED_ORIGINS: List[str] = ["http://localhost:3000"]
     UPLOAD_DIR: str = "uploads"
+    FIREBASE_PROJECT_ID: str = ""
 
     model_config = SettingsConfigDict(case_sensitive=True, env_file=".env", extra="ignore")
 
