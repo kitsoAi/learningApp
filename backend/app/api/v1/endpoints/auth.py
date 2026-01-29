@@ -78,8 +78,8 @@ async def verify_firebase_token(token: str):
     if not settings.FIREBASE_PROJECT_ID:
         print("ERROR: FIREBASE_PROJECT_ID is not set in environment variables!")
         raise HTTPException(
-            status_code=500, 
-            detail="Server configuration error: FIREBASE_PROJECT_ID is missing"
+            status_code=400, 
+            detail="Server configuration error: FIREBASE_PROJECT_ID is missing on the server. Please check ECS environment variables."
         )
 
     jwks_url = "https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com"
@@ -161,4 +161,13 @@ async def firebase_login(
         "access_token": access_token, 
         "token_type": "bearer",
         "refresh_token": refresh_token
+    }
+
+@router.get("/debug-config")
+async def debug_config():
+    """Endpoint to debug server environment configuration."""
+    return {
+        "PROJECT_ID_SET": bool(settings.FIREBASE_PROJECT_ID),
+        "PROJECT_ID_VALUE": settings.FIREBASE_PROJECT_ID if settings.FIREBASE_PROJECT_ID else "NOT_SET",
+        "ALLOWED_ORIGINS": settings.ALLOWED_ORIGINS,
     }
