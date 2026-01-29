@@ -95,7 +95,16 @@ export default function LoginPage() {
           type="button"
           variant="default"
           className="w-full mt-6 h-[54px] border-2 border-b-4 text-neutral-700 bg-white hover:bg-slate-100"
-          onClick={() => googleLogin()}
+          onClick={async () => {
+            try {
+              await googleLogin();
+              toast.success("Welcome back!");
+              router.push("/learn");
+            } catch (error) {
+              // Error is already handled by the store, but we can log it here
+              console.error("Google login error:", error);
+            }
+          }}
         >
           <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
             <path

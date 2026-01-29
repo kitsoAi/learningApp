@@ -119,7 +119,15 @@ export default function RegisterPage() {
             type="button"
             variant="outline"
             className="w-full mt-4"
-            onClick={() => googleLogin()}
+            onClick={async () => {
+              try {
+                await googleLogin();
+                toast.success("Welcome back!");
+                router.push("/learn");
+              } catch (error) {
+                console.error("Google login error:", error);
+              }
+            }}
           >
             <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
               <path
