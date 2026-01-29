@@ -179,6 +179,8 @@ jobs:
           task-definition: task-definition.json
           container-name: backend
           image: ${{ needs.build-and-push.outputs.backend-image }}
+          environment-variables: |
+            FIREBASE_PROJECT_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
 
       - name: Update Frontend container in task definition
         id: task-def-frontend

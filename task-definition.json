@@ -36,7 +36,7 @@
         },
         {
           "name": "ALLOWED_ORIGINS",
-          "value": "[\"http://learningapp-alb-1516781955.us-east-1.elb.amazonaws.com\"]"
+          "value": "[\"http://learningapp-alb-1516781955.us-east-1.elb.amazonaws.com\", \"http://localhost:3000\"]"
         },
         {
           "name": "FIREBASE_PROJECT_ID",

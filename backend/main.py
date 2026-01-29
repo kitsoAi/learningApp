@@ -26,10 +26,31 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+@app.middleware("http")
+async def log_requests(request, call_next):
+    origin = request.headers.get("origin")
+    method = request.method
+    url = request.url
+    print(f"DEBUG: Incoming request {method} {url} | Origin: {origin}")
+    response = await call_next(request)
+    return response
+
 if settings.ALLOWED_ORIGINS:
     origins = settings.ALLOWED_ORIGINS
     if isinstance(origins, str):
-        origins = [o.strip() for o in origins.split(",")]
+        import json
+        try:
+            # Try to parse as JSON list (common in ECS/Docker env vars)
+            origins = json.loads(origins)
+        except json.JSONDecodeError:
+            # Fallback to comma-separated string
+            origins = [o.strip() for o in origins.split(",")]
+    
+    # Ensure common dev origins are always there
+    if "http://localhost:3000" not in origins:
+        origins.append("http://localhost:3000")
+    
+    print(f"DEBUG: Setting CORS allowed_origins to: {origins}")
     
     app.add_middleware(
         CORSMiddleware,
@@ -37,6 +58,7 @@ if settings.ALLOWED_ORIGINS:
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
+        expose_headers=["*"]
     )
 
 app.include_router(api_router, prefix=settings.API_V1_STR)

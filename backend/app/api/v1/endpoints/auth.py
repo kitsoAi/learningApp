@@ -69,27 +69,46 @@ async def refresh_token_endpoint(
         raise HTTPException(status_code=401, detail="Invalid refresh token")
 
 async def verify_firebase_token(token: str):
-    jwks_url = "https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com"
-    async with httpx.AsyncClient() as client:
-        response = await client.get(jwks_url)
-        jwks = response.json()
+    # Using python-jose which is already in the project and works well with RS256/JWKS
+    from jose import jwt, JWTError
+    import httpx
     
-    header = jwt.get_unverified_header(token)
-    kid = header.get('kid')
+    print(f"DEBUG: Starting Firebase token verification. Project ID: '{settings.FIREBASE_PROJECT_ID}'")
     
-    if not kid:
-        raise HTTPException(status_code=401, detail="Invalid token header")
+    if not settings.FIREBASE_PROJECT_ID:
+        print("ERROR: FIREBASE_PROJECT_ID is not set in environment variables!")
+        raise HTTPException(
+            status_code=500, 
+            detail="Server configuration error: FIREBASE_PROJECT_ID is missing"
+        )
 
-    key = None
-    for k in jwks['keys']:
-        if k['kid'] == kid:
-            key = k
-            break
-            
-    if not key:
-        raise HTTPException(status_code=401, detail="Invalid token key")
+    jwks_url = "https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com"
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(jwks_url)
+            jwks = response.json()
+    except Exception as e:
+        print(f"ERROR: Failed to fetch JWKS: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to fetch Firebase public keys")
     
     try:
+        unverified_header = jwt.get_unverified_header(token)
+        kid = unverified_header.get('kid')
+        if not kid:
+            raise HTTPException(status_code=401, detail="Missing 'kid' in token header")
+            
+        # Find the correct key in JWKS
+        key = None
+        for k in jwks.get('keys', []):
+            if k.get('kid') == kid:
+                key = k
+                break
+        
+        if not key:
+            print(f"ERROR: No matching key found for kid: {kid}")
+            raise HTTPException(status_code=401, detail=f"No matching key found for kid: {kid}")
+
+        # Verify the token
         payload = jwt.decode(
             token, 
             key, 
@@ -97,9 +116,20 @@ async def verify_firebase_token(token: str):
             audience=settings.FIREBASE_PROJECT_ID,
             issuer=f"https://securetoken.google.com/{settings.FIREBASE_PROJECT_ID}"
         )
+        print(f"DEBUG: Token verified successfully for user: {payload.get('email')}")
         return payload
+    except JWTError as e:
+        print(f"ERROR: Token verification failed: {str(e)}")
+        raise HTTPException(
+            status_code=401, 
+            detail=f"Token verification failed: {str(e)}. (Project: {settings.FIREBASE_PROJECT_ID})"
+        )
     except Exception as e:
-        raise HTTPException(status_code=401, detail=f"Token verification failed: {str(e)}")
+        print(f"ERROR: Unexpected verification error: {str(e)}")
+        raise HTTPException(
+            status_code=401, 
+            detail=f"Unexpected error during token verification: {str(e)}"
+        )
 
 @router.post("/firebase", response_model=Token)
 async def firebase_login(
