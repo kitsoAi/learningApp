@@ -41,6 +41,10 @@
         {
           "name": "FIREBASE_PROJECT_ID",
           "value": "tswalingo-7d378"
+        },
+        {
+          "name": "SEED_DATABASE",
+          "value": "true"
         }
       ],
       "secrets": [

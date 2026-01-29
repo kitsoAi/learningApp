@@ -14,6 +14,18 @@ async def lifespan(app: FastAPI):
     # Startup: Create tables
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+    
+    # Check if we should seed the database
+    import os
+    if os.getenv("SEED_DATABASE") == "true":
+        print("SEED_DATABASE=true detected. Running seed script...")
+        try:
+            from seed import seed_data
+            await seed_data()
+            print("Seeding completed successfully!")
+        except Exception as e:
+            print(f"Error during seeding: {e}")
+            
     yield
     # Shutdown
     await engine.dispose()
