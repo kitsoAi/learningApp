@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { userApi } from "@/lib/api/auth";
+import { Flame } from "lucide-react";
 
 export default function ProfilePage() {
   const { user, updateUser } = useAuthStore();
@@ -169,14 +170,16 @@ export default function ProfilePage() {
                  <h2 className="text-xl font-bold text-neutral-800 mb-2">Statistics</h2>
                  <div className="grid grid-cols-2 gap-4">
                      <div className="flex items-center gap-x-3 p-4 border-2 border-neutral-200 rounded-2xl shadow-sm">
-                         <Image src="/flame.svg" alt="Streak" height={35} width={35} />
+                         <div className="p-2 bg-orange-100 rounded-lg">
+                           <Flame className="h-6 w-6 text-orange-500 fill-orange-500" />
+                         </div>
                          <div>
                              <p className="font-extrabold text-neutral-700 text-xl leading-none">{user.streak_count}</p>
                              <p className="text-neutral-500 text-sm font-bold uppercase tracking-tight">Day Streak</p>
                          </div>
                      </div>
                       <div className="flex items-center gap-x-3 p-4 border-2 border-neutral-200 rounded-2xl shadow-sm">
-                         <Image src="/flash.svg" alt="XP" height={35} width={35} />
+                         <Image src="/points.svg" alt="XP" height={35} width={35} />
                          <div>
                              <p className="font-extrabold text-neutral-700 text-xl leading-none">{user.xp}</p>
                              <p className="text-neutral-500 text-sm font-bold uppercase tracking-tight">Total XP</p>

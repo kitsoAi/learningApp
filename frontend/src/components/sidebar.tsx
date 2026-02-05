@@ -41,7 +41,7 @@ export const Sidebar = ({ className }: SidebarProps) => {
         />
         <SidebarItem label="Quests" href="/quests" iconSrc="/quests.svg" />
         <SidebarItem label="Shop" href="/shop" iconSrc="/shop.svg" />
-        <SidebarItem label="Profile" href="/profile" iconSrc="/profile.svg" />
+        <SidebarItem label="Profile" href="/profile" iconSrc="/boy.svg" />
       </div>
 
       <div className="p-4">
