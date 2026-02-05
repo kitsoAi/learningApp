@@ -170,7 +170,14 @@ jobs:
         run: |
           aws ecs describe-task-definition \
             --task-definition ${{ env.ECS_TASK_DEFINITION }} \
-            --query taskDefinition > task-definition.json
+            --query taskDefinition > task-definition-raw.json
+          # Remove status/revision/etc that render-task-definition doesn't like
+          jq 'del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)' task-definition-raw.json > task-definition.json
+          # Patch secrets to support plain text (remove :KEY:: suffixes)
+          sed -i 's/:DATABASE_URL:://g' task-definition.json
+          sed -i 's/:SECRET_KEY:://g' task-definition.json
+          sed -i 's/:GOOGLE_CLIENT_ID:://g' task-definition.json
+          sed -i 's/:GOOGLE_CLIENT_SECRET:://g' task-definition.json
 
       - name: Update Backend container in task definition
         id: task-def-backend
