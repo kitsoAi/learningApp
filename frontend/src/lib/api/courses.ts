@@ -152,3 +152,10 @@ export const questApi = {
     return response.data;
   },
 };
+
+export const adminApi = {
+  getAnalytics: async () => {
+    const response = await apiClient.get('/admin/analytics');
+    return response.data;
+  },
+};

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { LayoutDashboard, LogOut, BookOpen, Users } from "lucide-react";
+import { LayoutDashboard, LogOut, BookOpen, BarChart3 } from "lucide-react";
 import { useAuthStore } from "@/store/auth";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
@@ -42,6 +42,15 @@ export const AdminSidebar = ({ className }: AdminSidebarProps) => {
             >
                 <LayoutDashboard className="h-5 w-5" />
                 Dashboard
+            </Button>
+        </Link>
+        <Link href="/admin/analytics">
+            <Button 
+                variant={pathname === "/admin/analytics" ? "secondary" : "ghost"} 
+                className={cn("w-full justify-start gap-4", pathname !== "/admin/analytics" && "text-slate-400 hover:text-white hover:bg-slate-800")}
+            >
+                <BarChart3 className="h-5 w-5" />
+                Analytics
             </Button>
         </Link>
         {/* Placeholder for future expansion */}

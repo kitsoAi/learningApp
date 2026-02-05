@@ -6,7 +6,8 @@ from app.db.database import get_db
 from app.models.user import User
 from app.schemas.user import User as UserSchema
 from app.services.user_service import UserService
-from sqlalchemy import select
+from sqlalchemy import select, func
+from app.models.course import Course, Unit, Lesson, Challenge
 
 router = APIRouter()
 
@@ -61,3 +62,31 @@ async def remove_user_admin(
     await db.commit()
     await db.refresh(user)
     return {"message": f"Admin privileges removed from {user.email}"}
+@router.get("/analytics")
+async def get_analytics(
+    current_admin: User = Depends(dependencies.get_current_admin_user),
+    db: AsyncSession = Depends(get_db),
+) -> Any:
+    """Admin only: Get platform-wide analytics."""
+    # Counts
+    user_count = (await db.execute(select(func.count(User.id)))).scalar()
+    course_count = (await db.execute(select(func.count(Course.id)))).scalar()
+    unit_count = (await db.execute(select(func.count(Unit.id)))).scalar()
+    lesson_count = (await db.execute(select(func.count(Lesson.id)))).scalar()
+    challenge_count = (await db.execute(select(func.count(Challenge.id)))).scalar()
+    
+    # Average XP per user
+    avg_xp = (await db.execute(select(func.avg(User.xp)))).scalar() or 0
+    
+    # Active users (users with points > 0)
+    active_users = (await db.execute(select(func.count(User.id)).where(User.xp > 0))).scalar()
+    
+    return {
+        "total_users": user_count,
+        "total_courses": course_count,
+        "total_units": unit_count,
+        "total_lessons": lesson_count,
+        "total_challenges": challenge_count,
+        "average_xp": round(float(avg_xp), 2),
+        "active_users": active_users,
+    }
