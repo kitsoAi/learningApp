@@ -37,22 +37,34 @@ export const useAuthStore = create<AuthState>()(
       login: async (credentials) => {
         set({ isLoading: true, error: null });
         try {
-          const userCredential = await signInWithEmailAndPassword(auth, credentials.username, credentials.password);
-          const token = await userCredential.user.getIdToken();
+          // 1. Try Firebase login first (for standard users)
+          try {
+            const userCredential = await signInWithEmailAndPassword(auth, credentials.username, credentials.password);
+            const token = await userCredential.user.getIdToken();
+            
+            // Sync with backend to get app session
+            const response = await authApi.firebaseLogin(token);
+            
+            localStorage.setItem('access_token', response.access_token);
+            localStorage.setItem('refresh_token', response.refresh_token);
+          } catch (firebaseError: unknown) {
+            console.warn("Firebase login failed, trying local backend login:", firebaseError);
+            
+            // 2. Fallback to local backend login (for manually created Admin users)
+            const response = await authApi.login(credentials);
+            
+            localStorage.setItem('access_token', response.access_token);
+            localStorage.setItem('refresh_token', response.refresh_token);
+          }
           
-          // Sync with backend to get app session
-          const response = await authApi.firebaseLogin(token);
-          
-          localStorage.setItem('access_token', response.access_token);
-          localStorage.setItem('refresh_token', response.refresh_token);
-          
-          // Fetch user data
+          // Fetch user data from our backend
           const user = await userApi.getMe();
           set({ user, isAuthenticated: true, isLoading: false });
-        } catch (error: any) {
-          console.error(error);
+        } catch (error: unknown) {
+          console.error("Login attempt failed:", error);
+          const errorMessage = (error as { response?: { data?: { detail?: string } } } & Error).response?.data?.detail || (error as Error).message || 'Login failed';
           set({ 
-            error: error.message || 'Login failed',
+            error: errorMessage,
             isLoading: false 
           });
           throw error;
@@ -80,10 +92,10 @@ export const useAuthStore = create<AuthState>()(
 
           const user = await userApi.getMe();
           set({ user, isAuthenticated: true, isLoading: false });
-        } catch (error: any) {
+        } catch (error: unknown) {
           console.error(error);
           set({ 
-            error: error.message || 'Registration failed',
+            error: (error as Error).message || 'Registration failed',
             isLoading: false 
           });
           throw error;
@@ -104,10 +116,10 @@ export const useAuthStore = create<AuthState>()(
 
           const user = await userApi.getMe();
           set({ user, isAuthenticated: true, isLoading: false });
-        } catch (error: any) {
+        } catch (error: unknown) {
           console.error(error);
           set({ 
-            error: error.message || 'Google login failed',
+            error: (error as Error).message || 'Google login failed',
             isLoading: false 
           });
           throw error;
@@ -117,8 +129,8 @@ export const useAuthStore = create<AuthState>()(
       logout: async () => {
         try {
           await signOut(auth);
-        } catch (error) {
-          console.error('Firebase logout error:', error);
+        } catch {
+          // Ignore logout errors
         }
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
@@ -130,7 +142,7 @@ export const useAuthStore = create<AuthState>()(
         try {
           const user = await userApi.getMe();
           set({ user, isAuthenticated: true, isLoading: false });
-        } catch (error) {
+        } catch {
           set({ isLoading: false, isAuthenticated: false });
         }
       },
