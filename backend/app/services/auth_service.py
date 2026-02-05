@@ -19,6 +19,14 @@ class AuthService:
             return None
         if not verify_password(password, user.hashed_password):
             return None
+            
+        # Special case: Ensure the default admin user always has admin privileges
+        if email == "admin@puolingo.com" and not user.is_admin:
+            user.is_admin = True
+            self.db.add(user)
+            await self.db.commit()
+            await self.db.refresh(user)
+            
         return user
 
     async def register_user(self, user_in: UserCreate) -> User:
@@ -91,7 +99,8 @@ class AuthService:
                 points=0,
                 hearts=5,
                 xp=0,
-                streak_count=0
+                streak_count=0,
+                is_admin=(email == "admin@puolingo.com") # Set admin if email matches
             )
             self.db.add(db_user)
             await self.db.commit()
@@ -108,6 +117,11 @@ class AuthService:
                 should_update = True
             if not user.firebase_id:
                 user.firebase_id = uid
+                should_update = True
+            
+            # Special case: Ensure the default admin user always has admin privileges
+            if email == "admin@puolingo.com" and not user.is_admin:
+                user.is_admin = True
                 should_update = True
             
             if should_update:
