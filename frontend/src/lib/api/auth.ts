@@ -82,4 +82,12 @@ export const userApi = {
     const response = await apiClient.post('/users/me/streak/freeze');
     return response.data;
   },
+
+  // Upload avatar
+  uploadAvatar: async (file: File): Promise<{ url: string; filename: string }> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await apiClient.post<{ url: string; filename: string }>('/users/upload', formData);
+    return response.data;
+  },
 };

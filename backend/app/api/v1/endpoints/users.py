@@ -6,8 +6,37 @@ from app.db.database import get_db
 from app.models.user import User
 from app.schemas.user import User as UserSchema, UserUpdate
 from app.services.user_service import UserService
+import uuid
+import os
+from app.core.config import settings
+from fastapi import UploadFile, File
 
 router = APIRouter()
+
+@router.post("/upload")
+async def upload_user_media(
+    file: UploadFile = File(...),
+    current_user: User = Depends(dependencies.get_current_user),
+) -> Any:
+    """Upload a profile avatar."""
+    # Check file extension
+    ext = os.path.splitext(file.filename)[1].lower()
+    if ext not in [".png", ".jpg", ".jpeg", ".svg"]:
+        raise HTTPException(status_code=400, detail="Invalid image type")
+
+    # Ensure upload directory exists
+    os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
+    
+    # Generate unique filename
+    filename = f"avatar_{current_user.id}_{uuid.uuid4().hex[:8]}{ext}"
+    file_path = os.path.join(settings.UPLOAD_DIR, filename)
+    
+    # Save file
+    with open(file_path, "wb") as f:
+        content = await file.read()
+        f.write(content)
+    
+    return {"url": f"/uploads/{filename}", "filename": filename}
 
 @router.get("/me", response_model=UserSchema)
 async def read_users_me(
