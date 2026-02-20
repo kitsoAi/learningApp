@@ -84,9 +84,9 @@ async def my_admin_function(
     return {"message": "Admin only!"}
 ```
 
-## Security Notes
+## Security Note
 
 - Regular users have `is_admin = False` by default
 - Admin users can manage other users' admin status
 - Admins cannot remove their own admin privileges (safety measure)
-- All admin endpoints return 403 Forbidden for non-admin users
+- All admin endpoints return 403 Forbidden for non-admin user

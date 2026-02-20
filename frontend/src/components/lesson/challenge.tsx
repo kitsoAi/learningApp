@@ -79,6 +79,33 @@ export const ChallengeComponent = ({
       )
   }
 
+  if (type === "SPEAK") {
+    return (
+      <div className="flex flex-col items-center gap-y-8 w-full">
+        <div className="flex items-center justify-center p-8 bg-sky-100 rounded-full border-2 border-sky-300">
+          <Volume2 className="h-16 w-16 text-sky-500" />
+        </div>
+        <div className="flex flex-col items-center gap-y-2">
+          <p className="text-neutral-600 text-center font-bold text-lg lg:text-2xl">
+            Wave your hand and say it!
+          </p>
+          <div className="text-neutral-400 text-sm text-center italic">
+            (Whisper scoring coming soon...)
+          </div>
+        </div>
+        <Button 
+          variant="secondary" 
+          size="lg"
+          className="w-full lg:max-w-xs"
+          onClick={() => onSelect("SKIPPED")}
+          disabled={disabled || status !== "none"}
+        >
+          I said it! (Continue)
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <div className={cn(
       "grid gap-2",

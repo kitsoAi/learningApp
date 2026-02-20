@@ -86,14 +86,18 @@ export const Quiz = ({
         const correctOption = options.find((option) => option.correct);
         isCorrect = correctOption?.id === selectedOption;
     } else if (challenge.type === "TRANSLATE" || challenge.type === "LISTEN_TYPE" || challenge.type === "TAP_HEAR" || challenge.type === "SPEAK") {
-        // Simple string comparison, normalizing case and whitespace
-        const normalizedAnswer = String(selectedOption).toLowerCase().trim()
-            .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "") // Remove punctuation
-            .replace(/\s{2,}/g, " "); // Remove extra spaces
-        const normalizedCorrect = challenge.correct_text?.toLowerCase().trim()
-            .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "")
-            .replace(/\s{2,}/g, " ");
-        isCorrect = normalizedAnswer === normalizedCorrect;
+        if (challenge.type === "SPEAK" && selectedOption === "SKIPPED") {
+            isCorrect = true;
+        } else {
+            // Simple string comparison, normalizing case and whitespace
+            const normalizedAnswer = String(selectedOption).toLowerCase().trim()
+                .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "") // Remove punctuation
+                .replace(/\s{2,}/g, " "); // Remove extra spaces
+            const normalizedCorrect = challenge.correct_text?.toLowerCase().trim()
+                .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "")
+                .replace(/\s{2,}/g, " ");
+            isCorrect = normalizedAnswer === normalizedCorrect;
+        }
     } else if (challenge.type === "MATCH") {
         isCorrect = selectedOption === "MATCHED";
     }
