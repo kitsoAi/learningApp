@@ -86,6 +86,7 @@ jobs:
             git fetch --all
             git checkout $GIT_BRANCH
             git pull origin $GIT_BRANCH
+            docker compose down
             docker compose up -d --build
         env:
           GIT_BRANCH: ${{ github.ref_name }}
