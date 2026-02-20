@@ -16,7 +16,15 @@ from app.models.quest import Quest
 
 def load_curriculum_data():
     repo_root = Path(__file__).resolve().parent
-    setswana_path = repo_root / "frontend" / "setswana.json"
+    candidates = [
+        repo_root / "setswana.json",
+        repo_root / "frontend" / "setswana.json",
+        Path("/app/setswana.json"),
+        Path("/app/frontend/setswana.json"),
+    ]
+    setswana_path = next((p for p in candidates if p.exists()), None)
+    if not setswana_path:
+        raise FileNotFoundError("setswana.json not found in expected locations")
     setswana = json.loads(setswana_path.read_text(encoding="utf-8"))
     return {
         "courses": [
