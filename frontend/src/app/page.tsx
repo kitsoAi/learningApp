@@ -8,7 +8,6 @@ import Image from "next/image";
 export default function HomePage() {
   const router = useRouter();
   const { user, logout } = useAuthStore();
-  const puoSpeechUrl = process.env.NEXT_PUBLIC_PUOSPEECH_URL || "http://localhost:3001";
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
@@ -83,14 +82,12 @@ export default function HomePage() {
                 </>
               )}
               <Button
-                asChild
                 size="lg"
                 variant="default"
                 className="w-full h-[54px] text-lg border-2 border-b-4"
+                onClick={() => router.push("/puospeech")}
               >
-                <a href={puoSpeechUrl} target="_blank" rel="noreferrer">
-                  Open PuoSpeech
-                </a>
+                Test PuoSpeech
               </Button>
             </div>
           </div>

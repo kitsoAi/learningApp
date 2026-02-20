@@ -14,7 +14,6 @@ type SidebarProps = {
 
 export const Sidebar = ({ className }: SidebarProps) => {
   const { user, logout } = useAuthStore();
-  const puoSpeechUrl = process.env.NEXT_PUBLIC_PUOSPEECH_URL || "http://localhost:3001";
 
   return (
     <div
@@ -43,7 +42,7 @@ export const Sidebar = ({ className }: SidebarProps) => {
         <SidebarItem label="Quests" href="/quests" iconSrc="/quests.svg" />
         <SidebarItem label="Shop" href="/shop" iconSrc="/shop.svg" />
         <SidebarItem label="Profile" href="/profile" iconSrc="/boy.svg" />
-        <SidebarItem label="PuoSpeech" href={puoSpeechUrl} iconSrc="/robot.svg" external />
+        <SidebarItem label="PuoSpeech" href="/puospeech" iconSrc="/robot.svg" />
       </div>
 
       <div className="p-4">
