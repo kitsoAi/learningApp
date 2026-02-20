@@ -10,11 +10,12 @@ type SidebarItemProps = {
   label: string;
   iconSrc: string;
   href: string;
+  external?: boolean;
 };
 
-export const SidebarItem = ({ label, iconSrc, href }: SidebarItemProps) => {
+export const SidebarItem = ({ label, iconSrc, href, external = false }: SidebarItemProps) => {
   const pathname = usePathname();
-  const isActive = pathname === href;
+  const isActive = !external && pathname === href;
 
   return (
     <Button
@@ -22,16 +23,29 @@ export const SidebarItem = ({ label, iconSrc, href }: SidebarItemProps) => {
       className="h-[52px] justify-start"
       asChild
     >
-      <Link href={href}>
-        <Image
-          src={iconSrc}
-          alt={label}
-          className="mr-5"
-          height={32}
-          width={32}
-        />
-        {label}
-      </Link>
+      {external ? (
+        <a href={href} target="_blank" rel="noreferrer">
+          <Image
+            src={iconSrc}
+            alt={label}
+            className="mr-5"
+            height={32}
+            width={32}
+          />
+          {label}
+        </a>
+      ) : (
+        <Link href={href}>
+          <Image
+            src={iconSrc}
+            alt={label}
+            className="mr-5"
+            height={32}
+            width={32}
+          />
+          {label}
+        </Link>
+      )}
     </Button>
   );
 };

@@ -1,0 +1,19 @@
+services:
+  puospeech:
+    image: ${PUOSPEECH_IMAGE}
+    container_name: puospeech_model_api
+    restart: unless-stopped
+    ports:
+      - "${PUOSPEECH_PORT}:8000"
+    environment:
+      ASR_MODEL_PATH: ${ASR_MODEL_PATH}
+      XTTS_MODEL_DIR: ${XTTS_MODEL_DIR}
+      ASR_API_KEY: ${ASR_API_KEY}
+    volumes:
+      - ${MODEL_VOLUME_HOST}:/app/models
+      - ${XTTS_VOLUME_HOST}:/app/xtts_fine_tuned
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
