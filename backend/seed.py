@@ -15,7 +15,7 @@ from app.models.quest import Quest
 # --- Curriculum Data ---
 
 def load_curriculum_data():
-    repo_root = Path(__file__).resolve().parents[1]
+    repo_root = Path(__file__).resolve().parent
     setswana_path = repo_root / "frontend" / "setswana.json"
     setswana = json.loads(setswana_path.read_text(encoding="utf-8"))
     return {
