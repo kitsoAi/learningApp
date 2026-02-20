@@ -18,13 +18,17 @@ export default function PuoSpeechPage() {
   const audioChunksRef = useRef<Blob[]>([]);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const apiBase = useMemo(
-    () =>
-      process.env.NEXT_PUBLIC_PUOSPEECH_API_URL ||
-      process.env.NEXT_PUBLIC_PUOSPEECH_URL ||
-      "http://localhost:3001",
-    []
-  );
+  const apiBase = useMemo(() => {
+    const explicitApiUrl = process.env.NEXT_PUBLIC_PUOSPEECH_API_URL;
+    if (explicitApiUrl) return explicitApiUrl.replace(/\/$/, "");
+
+    if (typeof window !== "undefined") {
+      // Default to same host as frontend, but model API on port 3001.
+      return `${window.location.protocol}//${window.location.hostname}:3001`;
+    }
+
+    return "";
+  }, []);
 
   const endpoint = mode === "translate" ? "translate-speech" : "transcribe-speech";
 
