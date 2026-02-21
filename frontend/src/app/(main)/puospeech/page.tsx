@@ -1,10 +1,10 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
-import { Mic, Square, Loader2, AlertCircle, Languages, MessageSquare } from "lucide-react";
+import { Mic, Square, Loader2, AlertCircle, Languages, MessageSquare, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-type Mode = "transcribe" | "translate";
+type Mode = "transcribe" | "translate" | "tts";
 
 export default function PuoSpeechPage() {
   const [mode, setMode] = useState<Mode>("transcribe");
@@ -13,6 +13,8 @@ export default function PuoSpeechPage() {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<string>("");
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [ttsText, setTtsText] = useState<string>("");
+  const [ttsAudioUrl, setTtsAudioUrl] = useState<string | null>(null);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -54,6 +56,37 @@ export default function PuoSpeechPage() {
       setResult(data.translation || data.transcription || "No output received.");
     } catch (e) {
       setError("Failed to process speech. Check model API status and URL.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const sendTts = async () => {
+    if (!ttsText.trim()) {
+      setError("Enter text to synthesize.");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    setResult("");
+    setTtsAudioUrl(null);
+
+    try {
+      const response = await fetch(`${apiBase}/tts`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: ttsText }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed (${response.status})`);
+      }
+
+      const audioBlob = await response.blob();
+      setTtsAudioUrl(URL.createObjectURL(audioBlob));
+    } catch {
+      setError("Failed to generate speech. Check model API status and URL.");
     } finally {
       setLoading(false);
     }
@@ -113,6 +146,9 @@ export default function PuoSpeechPage() {
           >
             <Languages className="mr-2 h-4 w-4" /> Translate
           </Button>
+          <Button variant={mode === "tts" ? "secondary" : "outline"} onClick={() => setMode("tts")}>
+            <Volume2 className="mr-2 h-4 w-4" /> TTS
+          </Button>
         </div>
 
         <div className="mb-6 flex items-center gap-3">
@@ -143,6 +179,24 @@ export default function PuoSpeechPage() {
           />
         </div>
 
+        {mode === "tts" && (
+          <div className="mb-6">
+            <textarea
+              className="w-full rounded-xl border border-slate-200 p-3 text-sm"
+              rows={4}
+              placeholder="Type text to synthesize..."
+              value={ttsText}
+              onChange={(e) => setTtsText(e.target.value)}
+              disabled={loading}
+            />
+            <div className="mt-3">
+              <Button onClick={sendTts} disabled={loading || !ttsText.trim()}>
+                Generate Speech
+              </Button>
+            </div>
+          </div>
+        )}
+
         {loading && (
           <div className="mb-4 flex items-center text-sky-600">
             <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Processing...
@@ -166,6 +220,12 @@ export default function PuoSpeechPage() {
         {audioUrl && (
           <div className="mt-4">
             <audio src={audioUrl} controls className="w-full" />
+          </div>
+        )}
+
+        {ttsAudioUrl && (
+          <div className="mt-4">
+            <audio src={ttsAudioUrl} controls className="w-full" />
           </div>
         )}
       </div>
