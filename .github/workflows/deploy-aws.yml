@@ -79,10 +79,11 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          envs: GIT_BRANCH
+          envs: GIT_BRANCH,GH_PAT
           script: |
             set -e
             cd /home/ubuntu/learningapp
+            git remote set-url origin https://x-access-token:${GH_PAT}@github.com/kitsoAi/learningApp.git
             git fetch --all
             git checkout $GIT_BRANCH
             git pull origin $GIT_BRANCH
@@ -90,3 +91,4 @@ jobs:
             docker compose up -d --build
         env:
           GIT_BRANCH: ${{ github.ref_name }}
+          GH_PAT: ${{ secrets.GH_PAT }}
