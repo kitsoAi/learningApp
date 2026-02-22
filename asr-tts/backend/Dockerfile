@@ -6,8 +6,8 @@ RUN apt-get update \
 COPY requirements.txt .
 # Force CPU-only torch wheels to avoid downloading CUDA packages.
 RUN pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu \
-    torch==2.1.2+cpu \
-    torchaudio==2.1.2+cpu \
+    torch==2.4.1+cpu \
+    torchaudio==2.4.1+cpu \
   && pip install --no-cache-dir -r requirements.txt
 COPY . .
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
