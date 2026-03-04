@@ -137,6 +137,9 @@ docker-compose logs backend
 
 - Verify `NEXT_PUBLIC_API_URL` in `.env`
 - Check backend health: http://localhost:8000/health
+- For EC2/public deployments, make sure backend `FRONTEND_URL` and `ALLOWED_ORIGINS`
+  include your public site origin(s) (for example `https://puolingo.com`)
+- Prefer domain-based API URLs (for example `https://puolingo.com/api/v1`) instead of raw IPs
 
 ### DNS Resolution Issues (Docker for Windows)
 
