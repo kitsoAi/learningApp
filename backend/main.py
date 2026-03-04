@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from urllib.parse import urlsplit
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -9,26 +10,55 @@ from app.core.config import settings
 from app.api.v1.router import api_router
 
 
+def _normalize_origin(origin: str) -> str:
+    origin = origin.strip().rstrip("/")
+    if not origin:
+        return ""
+
+    parsed = urlsplit(origin)
+    if not parsed.scheme or not parsed.netloc:
+        return ""
+
+    return f"{parsed.scheme}://{parsed.netloc}"
+
+
 def _normalize_origins(origins):
+    candidates = []
+
     if isinstance(origins, list):
-        return origins
-    if isinstance(origins, str):
+        candidates = origins
+    elif isinstance(origins, str):
         try:
             parsed = json.loads(origins)
             if isinstance(parsed, list):
-                return parsed
+                candidates = parsed
+            else:
+                candidates = [origins]
         except Exception:
-            pass
-        return [origins]
-    return []
+            # Also support comma-separated values for simple env configuration.
+            candidates = [candidate.strip() for candidate in origins.split(",")]
+
+    normalized = []
+    seen = set()
+    for candidate in candidates:
+        if not isinstance(candidate, str):
+            continue
+
+        normalized_origin = _normalize_origin(candidate)
+        if normalized_origin and normalized_origin not in seen:
+            seen.add(normalized_origin)
+            normalized.append(normalized_origin)
+
+    return normalized
 
 
 app = FastAPI(title=settings.PROJECT_NAME)
 
 # CORS
 allowed_origins = _normalize_origins(settings.ALLOWED_ORIGINS)
-if settings.FRONTEND_URL and settings.FRONTEND_URL not in allowed_origins:
-    allowed_origins.append(settings.FRONTEND_URL)
+for frontend_origin in _normalize_origins(settings.FRONTEND_URL):
+    if frontend_origin not in allowed_origins:
+        allowed_origins.append(frontend_origin)
 
 app.add_middleware(
     CORSMiddleware,
