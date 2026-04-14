@@ -28,6 +28,8 @@ export const Card = ({
   disabled,
   type,
 }: Props) => {
+  const isImageSelect = type === "SELECT_IMAGE";
+
   const handleClick = useCallback(() => {
     if (disabled) return;
     onClick();
@@ -44,18 +46,23 @@ export const Card = ({
         selected && status === "correct" && "border-green-300 bg-green-100 hover:bg-green-100",
         selected && status === "wrong" && "border-rose-300 bg-rose-100 hover:bg-rose-100",
         disabled && "pointer-events-none opacity-50",
-        type === "ASSIST" && "lg:p-3 w-full"
+        type === "ASSIST" && "lg:p-3 w-full",
+        isImageSelect && "p-3 lg:p-4"
       )}
     >
       {audioSrc && <div className="hidden" />}
       {imageSrc && (
-        <div className="relative aspect-square mb-4 max-h-[80px] lg:max-h-[150px] w-full">
+        <div className={cn(
+          "relative aspect-square mb-4 w-full",
+          isImageSelect ? "max-h-[120px] lg:max-h-[180px]" : "max-h-[80px] lg:max-h-[150px]"
+        )}>
           <Image src={formatAssetUrl(imageSrc) || ""} fill alt={text} className="object-contain" />
         </div>
       )}
       <div className={cn(
         "flex items-center justify-between",
         type === "ASSIST" && "flex-row-reverse",
+        isImageSelect && "justify-center gap-x-2",
       )}>
         {type === "ASSIST" && <div />}
         <p className={cn(
@@ -63,17 +70,20 @@ export const Card = ({
           selected && "text-sky-500",
           selected && status === "correct" && "text-green-500",
           selected && status === "wrong" && "text-rose-500",
+          isImageSelect && "text-center",
         )}>
           {text}
         </p>
-        <div className={cn(
-          "lg:w-[30px] lg:h-[30px] w-[20px] h-[20px] border-2 flex items-center justify-center rounded-lg text-neutral-400 lg:text-[15px] text-[10px] font-semibold transition-all",
-          selected && "border-sky-300 text-sky-500",
-          selected && status === "correct" && "border-green-500 text-green-500",
-          selected && status === "wrong" && "border-rose-500 text-rose-500",
-        )}>
-          {shortcut}
-        </div>
+        {!isImageSelect && (
+          <div className={cn(
+            "lg:w-[30px] lg:h-[30px] w-[20px] h-[20px] border-2 flex items-center justify-center rounded-lg text-neutral-400 lg:text-[15px] text-[10px] font-semibold transition-all",
+            selected && "border-sky-300 text-sky-500",
+            selected && status === "correct" && "border-green-500 text-green-500",
+            selected && status === "wrong" && "border-rose-500 text-rose-500",
+          )}>
+            {shortcut}
+          </div>
+        )}
       </div>
     </div>
   );

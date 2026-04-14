@@ -67,10 +67,21 @@ export interface Lesson {
   completed?: boolean;
 }
 
+export type ChallengeType =
+  | "SELECT"
+  | "SELECT_IMAGE"
+  | "ASSIST"
+  | "TRANSLATE"
+  | "MATCH"
+  | "TAP_HEAR"
+  | "LISTEN_TYPE"
+  | "LISTEN_SELECT"
+  | "SPEAK";
+
 export interface Challenge {
   id: number;
   lesson_id: number;
-  type: string; // "SELECT", "ASSIST", etc.
+  type: ChallengeType;
   question: string;
   correct_text?: string;
   audio_src?: string;

@@ -304,6 +304,7 @@ export default function LessonEditorPage() {
                                   </SelectTrigger>
                                   <SelectContent>
                                       <SelectItem value="SELECT">Select</SelectItem>
+                                      <SelectItem value="SELECT_IMAGE">Select Image</SelectItem>
                                       <SelectItem value="ASSIST">Assist</SelectItem>
                                       <SelectItem value="TRANSLATE">Translate</SelectItem>
                                       <SelectItem value="MATCH">Match</SelectItem>

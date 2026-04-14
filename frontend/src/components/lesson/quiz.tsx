@@ -82,7 +82,12 @@ export const Quiz = ({
 
     let isCorrect = false;
 
-    if (challenge.type === "SELECT" || challenge.type === "ASSIST" || challenge.type === "LISTEN_SELECT") {
+    if (
+      challenge.type === "SELECT" ||
+      challenge.type === "SELECT_IMAGE" ||
+      challenge.type === "ASSIST" ||
+      challenge.type === "LISTEN_SELECT"
+    ) {
         const correctOption = options.find((option) => option.correct);
         isCorrect = correctOption?.id === selectedOption;
     } else if (challenge.type === "TRANSLATE" || challenge.type === "LISTEN_TYPE" || challenge.type === "TAP_HEAR" || challenge.type === "SPEAK") {
@@ -174,7 +179,9 @@ export const Quiz = ({
     );
   }
 
-  const title = challenge.type === "ASSIST" 
+  const title = challenge.type === "SELECT_IMAGE"
+    ? "Select the correct image"
+    : challenge.type === "ASSIST" 
     ? "Select the correct meaning"
     : challenge.type === "TRANSLATE"
         ? "Translate this sentence"

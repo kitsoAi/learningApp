@@ -27,6 +27,8 @@ export const ChallengeComponent = ({
   question,
   audioSrc,
 }: Props) => {
+  const isImageSelect = type === "SELECT_IMAGE";
+
   if (type === "TRANSLATE" || type === "TAP_HEAR") {
     // Treat as sentence builder
     const words = options.map(o => o.text);
@@ -109,16 +111,16 @@ export const ChallengeComponent = ({
   return (
     <div className={cn(
       "grid gap-2",
-      type === "SELECT" && "grid-cols-2 lg:grid-cols-[repeat(auto-fill,minmax(200px,1fr))]",
+      (type === "SELECT" || isImageSelect) && "grid-cols-2 lg:grid-cols-[repeat(auto-fill,minmax(200px,1fr))]",
       (type === "ASSIST" || type === "LISTEN_SELECT") && "grid-cols-1"
     )}>
-      {options.map((option) => (
+      {options.map((option, index) => (
         <Card
           key={option.id}
           id={option.id}
           text={option.text}
           imageSrc={option.image_src}
-          shortcut={`1`} // TODO: dynamic shortcut
+          shortcut={`${index + 1}`}
           selected={selectedOption === option.id}
           onClick={() => onSelect(option.id)}
           status={status}
