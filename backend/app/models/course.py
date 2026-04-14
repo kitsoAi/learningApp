@@ -43,7 +43,7 @@ class Challenge(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     lesson_id: Mapped[int] = mapped_column(ForeignKey("lessons.id"))
-    type: Mapped[str] = mapped_column(String) # e.g., "SELECT", "ASSIST", "TRANSLATE", "MATCH", "TAP_HEAR", "LISTEN_TYPE", "SPEAK"
+    type: Mapped[str] = mapped_column(String) # e.g., "SELECT", "SELECT_IMAGE", "ASSIST", "TRANSLATE", "MATCH", "TAP_HEAR", "LISTEN_TYPE", "SPEAK"
     question: Mapped[str] = mapped_column(Text)
     correct_text: Mapped[Optional[str]] = mapped_column(Text, nullable=True) # For non-option based challenges
     audio_src: Mapped[Optional[str]] = mapped_column(String, nullable=True) # For listening/dictation challenges

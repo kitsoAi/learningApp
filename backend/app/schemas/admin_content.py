@@ -17,7 +17,7 @@ class ChallengeOptionUpdate(BaseModel):
 # Challenge schemas
 class ChallengeCreate(BaseModel):
     lesson_id: int
-    type: str  # "SELECT", "ASSIST", etc.
+    type: str  # "SELECT", "SELECT_IMAGE", "ASSIST", etc.
     question: str
     correct_text: Optional[str] = None
     audio_src: Optional[str] = None
