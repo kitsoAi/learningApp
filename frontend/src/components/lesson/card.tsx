@@ -37,11 +37,18 @@ export const Card = ({
 
   useKey(shortcut, handleClick, {}, [handleClick]);
 
+  const formattedImageSrc = formatAssetUrl(imageSrc);
+  const useStandardImageTag =
+    typeof formattedImageSrc === "string" &&
+    (formattedImageSrc.startsWith("http://") ||
+      formattedImageSrc.startsWith("https://") ||
+      formattedImageSrc.startsWith("/uploads/"));
+
   return (
     <div
       onClick={handleClick}
       className={cn(
-        "h-full border-2 rounded-xl border-b-4 hover:bg-black/5 p-4 lg:p-6 cursor-pointer active:border-b-2 transition-all duration-200",
+        "h-full min-w-0 overflow-hidden border-2 rounded-xl border-b-4 hover:bg-black/5 p-4 lg:p-6 cursor-pointer active:border-b-2 transition-all duration-200",
         selected && "border-sky-300 bg-sky-100 hover:bg-sky-100",
         selected && status === "correct" && "border-green-300 bg-green-100 hover:bg-green-100",
         selected && status === "wrong" && "border-rose-300 bg-rose-100 hover:bg-rose-100",
@@ -51,12 +58,21 @@ export const Card = ({
       )}
     >
       {audioSrc && <div className="hidden" />}
-      {imageSrc && (
+      {formattedImageSrc && (
         <div className={cn(
           "relative aspect-square mb-4 w-full",
           isImageSelect ? "max-h-[120px] lg:max-h-[180px]" : "max-h-[80px] lg:max-h-[150px]"
         )}>
-          <Image src={formatAssetUrl(imageSrc) || ""} fill alt={text} className="object-contain" />
+          {useStandardImageTag ? (
+            <img
+              src={formattedImageSrc}
+              alt={text}
+              className="h-full w-full object-contain"
+              loading="lazy"
+            />
+          ) : (
+            <Image src={formattedImageSrc || ""} fill alt={text} className="object-contain" />
+          )}
         </div>
       )}
       <div className={cn(
@@ -66,7 +82,7 @@ export const Card = ({
       )}>
         {type === "ASSIST" && <div />}
         <p className={cn(
-          "text-neutral-600 text-sm lg:text-base font-bold",
+          "text-neutral-600 text-sm lg:text-base font-bold break-words",
           selected && "text-sky-500",
           selected && status === "correct" && "text-green-500",
           selected && status === "wrong" && "text-rose-500",

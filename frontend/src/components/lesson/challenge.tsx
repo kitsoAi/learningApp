@@ -108,10 +108,19 @@ export const ChallengeComponent = ({
     );
   }
 
+  if (options.length === 0) {
+    return (
+      <div className="w-full rounded-xl border-2 border-dashed p-4 text-center text-sm font-medium text-neutral-500">
+        No options configured for this challenge yet. Add options in Admin and save.
+      </div>
+    );
+  }
+
   return (
     <div className={cn(
       "grid gap-2",
-      (type === "SELECT" || isImageSelect) && "grid-cols-2 lg:grid-cols-[repeat(auto-fill,minmax(200px,1fr))]",
+      type === "SELECT" && "grid-cols-2 lg:grid-cols-[repeat(auto-fill,minmax(200px,1fr))]",
+      isImageSelect && "grid-cols-1 min-[360px]:grid-cols-2 lg:grid-cols-[repeat(auto-fill,minmax(200px,1fr))]",
       (type === "ASSIST" || type === "LISTEN_SELECT") && "grid-cols-1"
     )}>
       {options.map((option, index) => (
