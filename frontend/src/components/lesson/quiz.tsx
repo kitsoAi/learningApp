@@ -206,15 +206,15 @@ export const Quiz = ({
         percentage={percentage}
         hasActiveSubscription={!!userSubscription}
       />
-      <div className="flex-1">
+      <div className="flex-1 overflow-x-hidden">
         <div className="h-full flex items-center justify-center">
-          <div className="lg:min-h-[350px] lg:w-[600px] w-full px-6 lg:px-0 flex flex-col gap-y-12">
+          <div className="lg:min-h-[350px] lg:w-[600px] w-full px-4 sm:px-6 lg:px-0 flex flex-col gap-y-8 lg:gap-y-12">
             <h1 className="text-xl lg:text-3xl text-center lg:text-start font-bold text-neutral-700 tracking-tight">
               {title}
             </h1>
             
             <div className="flex flex-col gap-y-6">
-              <div className="flex items-center gap-x-4 mb-2">
+              <div className="flex items-start sm:items-center gap-x-3 sm:gap-x-4 mb-2 w-full min-w-0">
                 <Image 
                   src={mascotSrc} 
                   height={150} 
@@ -227,12 +227,14 @@ export const Quiz = ({
                   height={100} 
                   width={100} 
                   alt="Mascot" 
-                  className="block lg:hidden"
+                  className="hidden sm:block lg:hidden shrink-0"
                 />
-                <QuestionBubble 
-                  question={challenge.question} 
-                  audioSrc={challenge.audio_src}
-                />
+                <div className="flex-1 min-w-0">
+                  <QuestionBubble 
+                    question={challenge.question} 
+                    audioSrc={challenge.audio_src}
+                  />
+                </div>
               </div>
 
               <ChallengeComponent

@@ -1,8 +1,13 @@
+from __future__ import annotations
+
 from sqlalchemy import Integer, String, Boolean, DateTime, Date
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime, date
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 from app.db.database import Base
+
+if TYPE_CHECKING:
+    from app.models.progress import UserProgress
 
 class User(Base):
     __tablename__ = "users"
@@ -31,4 +36,4 @@ class User(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # Relationships
-    progress: Mapped[list["UserProgress"]] = relationship("UserProgress", back_populates="user")
+    progress: Mapped[list[UserProgress]] = relationship("UserProgress", back_populates="user")

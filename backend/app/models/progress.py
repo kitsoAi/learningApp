@@ -1,7 +1,13 @@
+from __future__ import annotations
+
 from sqlalchemy import Integer, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
+from typing import TYPE_CHECKING
 from app.db.database import Base
+
+if TYPE_CHECKING:
+    from app.models.user import User
 
 class UserProgress(Base):
     __tablename__ = "user_progress"
@@ -15,6 +21,6 @@ class UserProgress(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
-    user: Mapped["User"] = relationship("User", back_populates="progress")
+    user: Mapped[User] = relationship("User", back_populates="progress")
     # Optional: relationship to Lesson if we want to access lesson details directly from progress
     # lesson: Mapped["Lesson"] = relationship("Lesson") 

@@ -15,7 +15,7 @@ export const QuestionBubble = ({ question, audioSrc }: Props) => {
   };
 
   return (
-    <div className="relative py-2 px-4 border-2 rounded-2xl text-sm lg:text-base text-neutral-700 font-bold bg-white flex items-center gap-x-3">
+    <div className="relative w-full max-w-full min-w-0 py-2 px-4 border-2 rounded-2xl text-sm lg:text-base text-neutral-700 font-bold bg-white flex items-center gap-x-3">
       {audioSrc && (
         <button
           onClick={onPlay}
@@ -24,7 +24,9 @@ export const QuestionBubble = ({ question, audioSrc }: Props) => {
           <Volume2 className="h-4 w-4 lg:h-6 lg:w-6" />
         </button>
       )}
-      <span>{question}</span>
+      <span className="min-w-0 whitespace-normal break-words leading-snug">
+        {question}
+      </span>
       <div
         className="absolute -left-2 top-1/2 -translate-y-1/2 w-0 h-0 border-x-8 border-x-transparent border-t-8 border-t-white"
         style={{ transform: "rotate(90deg)" }}

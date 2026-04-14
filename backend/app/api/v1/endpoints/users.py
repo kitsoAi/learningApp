@@ -1,5 +1,5 @@
 from typing import Any
-from fastapi import APIRouter, Depends, Body
+from fastapi import APIRouter, Depends, Body, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.api import dependencies
 from app.db.database import get_db
