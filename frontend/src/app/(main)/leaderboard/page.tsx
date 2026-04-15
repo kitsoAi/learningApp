@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { useAuthStore } from "@/store/auth";
 import { useCourseStore } from "@/store/course";
 import { apiClient } from "@/lib/api"; 
+import { formatAssetUrl } from "@/lib/utils";
 
 // Quick API call within component for now, or move to lib/api
 const getLeaderboard = async () => {
@@ -89,7 +90,7 @@ export default function LeaderboardPage() {
                   <Avatar className="border bg-green-500 h-12 w-12 ml-3 mr-6">
                     <AvatarImage
                       className="object-cover"
-                      src={item.image_src || "/mascot.svg"}
+                      src={formatAssetUrl(item.image_src) || "/mascot.svg"}
                     />
                     <AvatarFallback className="bg-green-500 text-white font-bold">
                         {item.full_name?.[0] || "U"}
