@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { userApi } from "@/lib/api/auth";
 import { Flame } from "lucide-react";
+import { formatAssetUrl } from "@/lib/utils";
 
 export default function ProfilePage() {
   const { user, updateUser } = useAuthStore();
@@ -92,7 +93,7 @@ export default function ProfilePage() {
                     <Avatar className="bg-green-500 h-[100px] w-[100px] border-4 border-white shadow-md">
                         <AvatarImage
                             className="object-cover"
-                            src={user.image_src || "/mascot.svg"}
+                            src={formatAssetUrl(user.image_src) || "/mascot.svg"}
                         />
                         <AvatarFallback className="bg-green-500 text-white font-bold text-2xl">
                             {user.full_name?.[0] || "U"}
