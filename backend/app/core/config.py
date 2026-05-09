@@ -13,6 +13,14 @@ def _database_url_from_env() -> str:
     )
 
 
+def _firebase_project_id_from_env() -> str:
+    return (
+        os.getenv("FIREBASE_PROJECT_ID")
+        or os.getenv("NEXT_PUBLIC_FIREBASE_PROJECT_ID")
+        or ""
+    )
+
+
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Puolingo API"
     API_V1_STR: str = "/api/v1"
@@ -39,7 +47,7 @@ class Settings(BaseSettings):
     FRONTEND_URL: str = "http://localhost:3000"
     ALLOWED_ORIGINS: Union[List[str], str] = ["http://localhost:3000", "http://puolingo.com"]
     UPLOAD_DIR: str = "uploads"
-    FIREBASE_PROJECT_ID: str = ""
+    FIREBASE_PROJECT_ID: str = _firebase_project_id_from_env()
 
     model_config = SettingsConfigDict(case_sensitive=True, env_file=".env", extra="ignore")
 

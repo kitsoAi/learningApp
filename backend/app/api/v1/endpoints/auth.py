@@ -7,7 +7,7 @@ from app.api import dependencies
 from app.core.config import settings
 from app.core.security import create_access_token, create_refresh_token
 from app.db.database import get_db
-from app.schemas.user import Token, UserCreate, User, FirebaseLoginRequest
+from app.schemas.user import Token, UserCreate, User, FirebaseLoginRequest, RefreshTokenRequest
 import httpx
 from jose import jwt
 from app.services.auth_service import AuthService
@@ -46,13 +46,13 @@ async def login(
 
 @router.post("/refresh", response_model=Token)
 async def refresh_token_endpoint(
-    refresh_token: str,
+    request: RefreshTokenRequest,
     db: AsyncSession = Depends(get_db)
 ) -> Any:
     """Refresh access token using a valid refresh token."""
     from jose import jwt, JWTError
     try:
-        payload = jwt.decode(refresh_token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        payload = jwt.decode(request.refresh_token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         user_id = payload.get("sub")
         if not user_id or not payload.get("refresh"):
             raise HTTPException(status_code=401, detail="Invalid refresh token")
