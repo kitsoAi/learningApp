@@ -9,6 +9,7 @@ from app.services.user_service import UserService
 import uuid
 import os
 from app.core.config import settings
+from app.core.runtime import local_uploads_supported
 from fastapi import UploadFile, File
 
 router = APIRouter()
@@ -23,6 +24,12 @@ async def upload_user_media(
     ext = os.path.splitext(file.filename)[1].lower()
     if ext not in [".png", ".jpg", ".jpeg", ".svg"]:
         raise HTTPException(status_code=400, detail="Invalid image type")
+
+    if not local_uploads_supported():
+        raise HTTPException(
+            status_code=501,
+            detail="Local file uploads are disabled on Vercel. Use external object storage such as Vercel Blob or S3.",
+        )
 
     # Ensure upload directory exists
     os.makedirs(settings.UPLOAD_DIR, exist_ok=True)

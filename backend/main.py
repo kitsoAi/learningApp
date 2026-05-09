@@ -1,5 +1,4 @@
 import json
-from pathlib import Path
 from urllib.parse import urlsplit
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -7,6 +6,7 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.core.config import settings
+from app.core.runtime import get_uploads_path, local_uploads_supported
 from app.api.v1.router import api_router
 
 
@@ -83,6 +83,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 
 # Static uploads
-uploads_path = Path(settings.UPLOAD_DIR)
-uploads_path.mkdir(exist_ok=True)
-app.mount("/uploads", StaticFiles(directory=settings.UPLOAD_DIR), name="uploads")
+if local_uploads_supported():
+    uploads_path = get_uploads_path()
+    uploads_path.mkdir(exist_ok=True)
+    app.mount("/uploads", StaticFiles(directory=str(uploads_path)), name="uploads")

@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api import dependencies
 from app.db.database import get_db
 from app.core.config import settings
+from app.core.runtime import local_uploads_supported
 from app.models.user import User
 from app.schemas.course import Course, Unit, Lesson, Challenge, ChallengeOption
 from app.schemas.admin_content import (
@@ -31,6 +32,12 @@ async def upload_media(
     ext = os.path.splitext(file.filename)[1].lower()
     if ext not in [".png", ".jpg", ".jpeg", ".mp3", ".wav", ".svg"]:
         raise HTTPException(status_code=400, detail="Invalid file type")
+
+    if not local_uploads_supported():
+        raise HTTPException(
+            status_code=501,
+            detail="Local file uploads are disabled on Vercel. Use external object storage such as Vercel Blob or S3.",
+        )
 
     # Ensure upload directory exists
     os.makedirs(settings.UPLOAD_DIR, exist_ok=True)

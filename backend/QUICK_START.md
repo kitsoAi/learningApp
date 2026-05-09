@@ -33,6 +33,8 @@ Since Docker Desktop is not running, here are your options:
 
    ```
    DATABASE_URL=postgresql+asyncpg://postgres:YOUR_PASSWORD@localhost:5432/puolingo
+   DB_POOL_MODE=direct
+   DB_SSL_MODE=disable
    ```
 
 5. **Start the server**:
@@ -60,6 +62,12 @@ If you have Docker Desktop installed but it's not running:
 3. Create new project
 4. Copy the connection string
 5. Update `.env` with the connection string
+6. For serverless Postgres poolers, also set:
+
+   ```
+   DB_POOL_MODE=transaction
+   DB_SSL_MODE=require
+   ```
 
 ## Verify Setup
 

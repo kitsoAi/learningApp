@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { Word } from "./word";
 import { Option } from "./option";
 import services from "@/utils/services";
 
-import { DroppableProvided, DroppableStateSnapshot, DroppableProps } from "react-beautiful-dnd";
+import { DroppableProvided, DroppableStateSnapshot, DroppableProps } from "@hello-pangea/dnd";
 
 interface StrictModeDroppableProps extends Omit<DroppableProps, 'children'> {
   children: (provided: DroppableProvided, snapshot: DroppableStateSnapshot) => React.ReactElement<HTMLElement>;

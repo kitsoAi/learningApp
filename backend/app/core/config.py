@@ -4,12 +4,21 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Puolingo API"
     API_V1_STR: str = "/api/v1"
+    VERCEL_ENV: str = ""
     
     DATABASE_URL: str
     SECRET_KEY: str
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+    DB_POOL_SIZE: int = 20
+    DB_MAX_OVERFLOW: int = 10
+    DB_POOL_TIMEOUT: int = 30
+    DB_POOL_RECYCLE: int = 1800
+    DB_POOL_MODE: str = "auto"
+    DB_SSL_MODE: str = "auto"
+    DB_PREPARED_STATEMENT_CACHE_SIZE: int = 100
+    DB_DISABLE_POSTGRES_JIT: bool = False
     
     GOOGLE_CLIENT_ID: str = ""
     GOOGLE_CLIENT_SECRET: str = ""
