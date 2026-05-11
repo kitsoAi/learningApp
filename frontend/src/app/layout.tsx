@@ -8,6 +8,11 @@ const font = Nunito({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Puolingo - Learn Languages",
   description: "Interactive platform for language learning with lessons, quizzes, and progress tracking.",
+  icons: {
+    icon: "/icon",
+    shortcut: "/icon",
+    apple: "/icon",
+  },
 };
 
 import { ExitModal } from "@/components/modals/exit-modal";

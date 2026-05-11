@@ -30,14 +30,6 @@ export const authApi = {
     });
     return response.data;
   },
-
-  // Firebase login sync
-  firebaseLogin: async (idToken: string): Promise<AuthResponse> => {
-    const response = await apiClient.post<AuthResponse>('/auth/firebase', {
-      token: idToken,
-    });
-    return response.data;
-  },
 };
 
 export const userApi = {
