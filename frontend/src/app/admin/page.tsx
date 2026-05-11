@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plus, Trash2, Edit2 } from "lucide-react";
+import { Plus, Trash2, Edit2, Library, Layers3, BookOpen } from "lucide-react";
 import { CourseModal } from "@/components/modals/course-modal";
 import { UnitModal } from "@/components/modals/unit-modal";
 import { LessonModal } from "@/components/modals/lesson-modal";
@@ -141,11 +141,18 @@ export default function AdminPage() {
   };
 
   if (loading) {
-    return <div className="p-6">Loading admin dashboard...</div>;
+    return <div className="p-6 text-sm font-medium text-neutral-500">Loading admin dashboard...</div>;
   }
 
+  const totalUnits = courses.reduce((sum, course) => sum + (course.units?.length || 0), 0);
+  const totalLessons = courses.reduce(
+    (sum, course) =>
+      sum + (course.units?.reduce((unitSum, unit) => unitSum + (unit.lessons?.length || 0), 0) || 0),
+    0
+  );
+
   return (
-    <div className="p-6">
+    <div className="space-y-8 p-6">
       <CourseModal 
         open={isModalOpen} 
         onOpenChange={setIsModalOpen} 
@@ -167,42 +174,82 @@ export default function AdminPage() {
         initialData={editingLesson}
       />
 
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Admin Dashboard</h1>
-          <p className="text-muted-foreground">
-            Manage courses, units, and lessons.
-          </p>
+      <div className="rounded-[2rem] border border-slate-200 bg-gradient-to-r from-slate-950 via-slate-900 to-slate-800 p-8 text-white shadow-sm">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-2xl">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.24em] text-slate-300">
+              Content Control
+            </p>
+            <h1 className="text-3xl font-extrabold tracking-tight">Admin Dashboard</h1>
+            <p className="mt-3 text-base font-medium text-slate-300">
+              Manage the full course structure, keep lessons organized, and update app content from one place.
+            </p>
+          </div>
+          <Button onClick={openCreateModal} variant="secondary" className="h-[54px] px-6 text-base font-bold">
+            <Plus className="mr-2 h-4 w-4" /> Add Course
+          </Button>
         </div>
-        <Button onClick={openCreateModal}>
-          <Plus className="mr-2 h-4 w-4" /> Add Course
-        </Button>
       </div>
 
-      <Separator className="my-6" />
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card className="rounded-3xl border-slate-200 shadow-sm">
+          <CardContent className="flex items-center gap-4 p-6">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#e9f8db] text-[#58cc02]">
+              <Library className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-sm font-bold uppercase tracking-wide text-neutral-500">Courses</p>
+              <p className="text-3xl font-extrabold text-neutral-900">{courses.length}</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="rounded-3xl border-slate-200 shadow-sm">
+          <CardContent className="flex items-center gap-4 p-6">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-100 text-sky-700">
+              <Layers3 className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-sm font-bold uppercase tracking-wide text-neutral-500">Units</p>
+              <p className="text-3xl font-extrabold text-neutral-900">{totalUnits}</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="rounded-3xl border-slate-200 shadow-sm">
+          <CardContent className="flex items-center gap-4 p-6">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-100 text-amber-700">
+              <BookOpen className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-sm font-bold uppercase tracking-wide text-neutral-500">Lessons</p>
+              <p className="text-3xl font-extrabold text-neutral-900">{totalLessons}</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       <div className="grid gap-6">
         {courses.map((course) => (
-          <Card key={course.id}>
+          <Card key={course.id} className="rounded-3xl border-slate-200 shadow-sm">
             <CardHeader>
               <CardTitle className="flex justify-between items-center">
-                <span>{course.title}</span>
+                <span className="text-xl font-extrabold text-neutral-900">{course.title}</span>
                 <div className="space-x-2">
                     <Button variant="outline" size="sm" onClick={() => openEditModal(course)}>Edit Course</Button>
                     <Button variant="danger" size="sm" onClick={() => handleDeleteCourse(course.id)}>Delete</Button>
                 </div>
               </CardTitle>
-              <CardDescription>{course.description}</CardDescription>
+              <CardDescription className="text-sm font-medium text-neutral-500">{course.description}</CardDescription>
             </CardHeader>
             <CardContent>
-              <h3 className="font-semibold mb-4">Units</h3>
+              <Separator className="mb-6" />
+              <h3 className="mb-4 text-sm font-bold uppercase tracking-[0.18em] text-neutral-500">Units</h3>
               <div className="space-y-6">
                 {course.units?.length === 0 && <span className="text-muted-foreground italic">No units yet.</span>}
                 {course.units?.map((unit) => (
-                  <div key={unit.id} className="border rounded-lg p-4">
+                  <div key={unit.id} className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
                     <div className="flex justify-between items-center mb-4">
                         <div>
-                            <h4 className="font-bold">Unit {unit.order_index}: {unit.title}</h4>
+                            <h4 className="font-bold text-neutral-900">Unit {unit.order_index}: {unit.title}</h4>
                             <p className="text-sm text-neutral-500">{unit.description}</p>
                         </div>
                         <div className="flex space-x-2">
@@ -216,13 +263,13 @@ export default function AdminPage() {
                     </div>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {unit.lessons?.map((lesson) => (
+                        {unit.lessons?.map((lesson) => (
                         <div
                           key={lesson.id}
-                          className="flex flex-col p-3 border rounded-md bg-neutral-50"
+                          className="flex flex-col rounded-2xl border border-slate-200 bg-white p-3"
                         >
                           <div className="flex justify-between items-start mb-2">
-                             <span className="font-semibold text-sm">Lesson {lesson.order_index}: {lesson.title}</span>
+                             <span className="font-semibold text-sm text-neutral-800">Lesson {lesson.order_index}: {lesson.title}</span>
                              <div className="flex space-x-1">
                                 <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => openEditLessonModal(lesson)}>
                                     <Edit2 className="h-3 w-3" />
@@ -241,7 +288,7 @@ export default function AdminPage() {
                       ))}
                       <Button 
                         variant="outline" 
-                        className="border-dashed h-full min-h-[80px]"
+                        className="h-full min-h-[80px] rounded-2xl border-dashed border-slate-300 bg-white"
                         onClick={() => openCreateLessonModal(unit.id)}
                       >
                         <Plus className="mr-2 h-4 w-4" /> Add Lesson

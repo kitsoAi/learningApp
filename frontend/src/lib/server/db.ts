@@ -9,11 +9,12 @@ export function getSql() {
   const connectionString =
     process.env.POSTGRES_URL ||
     process.env.POSTGRES_PRISMA_URL ||
+    process.env.POSTGRES_URL_NON_POOLING ||
     process.env.DATABASE_URL;
 
   if (!connectionString) {
     throw new Error(
-      "Missing database connection string. Set POSTGRES_URL, POSTGRES_PRISMA_URL, or DATABASE_URL."
+      "Missing database connection string. Set POSTGRES_URL, POSTGRES_PRISMA_URL, POSTGRES_URL_NON_POOLING, or DATABASE_URL."
     );
   }
 
