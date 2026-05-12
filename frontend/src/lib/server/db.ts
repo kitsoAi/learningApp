@@ -3,26 +3,53 @@ let cachedSql: postgres.Sql | null = null;
 let schemaInitPromise: Promise<void> | null = null;
 let schemaVerified = false;
 
+function buildConnectionStringFromParts() {
+  const host =
+    process.env.POSTGRES_HOST ||
+    process.env.PGHOST ||
+    process.env.PGHOST_UNPOOLED;
+  const database = process.env.POSTGRES_DATABASE || process.env.PGDATABASE;
+  const user = process.env.POSTGRES_USER || process.env.PGUSER;
+  const password = process.env.POSTGRES_PASSWORD || process.env.PGPASSWORD;
+
+  if (!host || !database || !user || !password) {
+    return null;
+  }
+
+  return `postgresql://${encodeURIComponent(user)}:${encodeURIComponent(password)}@${host}/${database}`;
+}
+
+function getConnectionString() {
+  return (
+    process.env.POSTGRES_PRISMA_URL ||
+    process.env.POSTGRES_URL ||
+    process.env.DATABASE_URL ||
+    process.env.POSTGRES_URL_NON_POOLING ||
+    process.env.DATABASE_URL_UNPOOLED ||
+    process.env.POSTGRES_URL_NO_SSL ||
+    buildConnectionStringFromParts()
+  );
+}
+
 export function getSql() {
   if (cachedSql) {
     return cachedSql;
   }
 
-  const connectionString =
-    process.env.POSTGRES_URL ||
-    process.env.POSTGRES_PRISMA_URL ||
-    process.env.POSTGRES_URL_NON_POOLING ||
-    process.env.DATABASE_URL;
+  const connectionString = getConnectionString();
 
   if (!connectionString) {
     throw new Error(
-      "Missing database connection string. Set POSTGRES_URL, POSTGRES_PRISMA_URL, POSTGRES_URL_NON_POOLING, or DATABASE_URL."
+      "Missing database connection string. Set POSTGRES_PRISMA_URL, POSTGRES_URL, DATABASE_URL, POSTGRES_URL_NON_POOLING, DATABASE_URL_UNPOOLED, or the POSTGRES_/PG* parts."
     );
   }
 
   const useSsl = !/localhost|127\.0\.0\.1/i.test(connectionString);
   cachedSql = postgres(connectionString, {
-    max: Number(process.env.POSTGRES_POOL_MAX || "5"),
+    max: Number(process.env.POSTGRES_POOL_MAX || "2"),
+    connect_timeout: Number(process.env.POSTGRES_CONNECT_TIMEOUT || "10"),
+    idle_timeout: Number(process.env.POSTGRES_IDLE_TIMEOUT || "20"),
+    max_lifetime: Number(process.env.POSTGRES_MAX_LIFETIME || "300"),
     ssl: useSsl ? "require" : undefined,
     prepare: false,
     onnotice: () => {},
