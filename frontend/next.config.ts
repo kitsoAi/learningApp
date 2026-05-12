@@ -1,21 +1,9 @@
 import type { NextConfig } from "next";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
-const supabaseUrl =
-  process.env.NEXT_PUBLIC_SUPABASE_URL ||
-  process.env.SUPABASE_URL ||
-  "";
 const parsedApiUrl = (() => {
   try {
     return new URL(apiUrl);
-  } catch {
-    return null;
-  }
-})();
-
-const parsedSupabaseUrl = (() => {
-  try {
-    return supabaseUrl ? new URL(supabaseUrl) : null;
   } catch {
     return null;
   }
@@ -50,17 +38,11 @@ if (parsedApiUrl && (parsedApiUrl.protocol === "http:" || parsedApiUrl.protocol 
   }
 }
 
-if (
-  parsedSupabaseUrl &&
-  (parsedSupabaseUrl.protocol === "http:" || parsedSupabaseUrl.protocol === "https:")
-) {
-  uploadRemotePatterns.push({
-    protocol: parsedSupabaseUrl.protocol.slice(0, -1) as "http" | "https",
-    hostname: parsedSupabaseUrl.hostname,
-    port: parsedSupabaseUrl.port || "",
-    pathname: "/storage/v1/object/public/**",
-  });
-}
+uploadRemotePatterns.push({
+  protocol: "https",
+  hostname: "**.public.blob.vercel-storage.com",
+  pathname: "/**",
+});
 
 const nextConfig: NextConfig = {
   output: "standalone",
