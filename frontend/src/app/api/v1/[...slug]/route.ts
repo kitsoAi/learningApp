@@ -6,6 +6,9 @@ import { createAccessToken, createRefreshToken, verifyToken } from "@/lib/server
 import { ensureAppSchema, getSql, sql } from "@/lib/server/db";
 import { uploadPublicFile } from "@/lib/server/storage";
 
+export const runtime = "nodejs";
+export const maxDuration = 60;
+
 type RouteContext = {
   params: Promise<{
     slug: string[];
@@ -30,6 +33,15 @@ type DbUser = {
   created_at?: string;
   updated_at?: string;
 };
+
+type CachedValue<T> = {
+  data: T;
+  expiresAt: number;
+};
+
+const ADMIN_CACHE_TTL_MS = 30_000;
+let adminCoursesTreeCache: CachedValue<any[]> | null = null;
+let adminAnalyticsCache: CachedValue<Record<string, unknown>> | null = null;
 
 function json(data: unknown, init?: ResponseInit) {
   return NextResponse.json(data, init);
@@ -226,6 +238,55 @@ async function fetchAdminCoursesTree(): Promise<any[]> {
     ...course,
     units: unitMap.get(course.id) ?? [],
   }));
+}
+
+async function getCachedAdminCoursesTree(): Promise<any[]> {
+  if (adminCoursesTreeCache && adminCoursesTreeCache.expiresAt > Date.now()) {
+    return adminCoursesTreeCache.data;
+  }
+
+  const tree = await fetchAdminCoursesTree();
+  adminCoursesTreeCache = {
+    data: tree,
+    expiresAt: Date.now() + ADMIN_CACHE_TTL_MS,
+  };
+
+  return tree;
+}
+
+async function getCachedAdminAnalytics() {
+  if (adminAnalyticsCache && adminAnalyticsCache.expiresAt > Date.now()) {
+    return adminAnalyticsCache.data;
+  }
+
+  const totalsRows = (await sql`
+    select
+      (select count(*) from users) as total_users,
+      (select count(*) from courses) as total_courses,
+      (select count(*) from units) as total_units,
+      (select count(*) from lessons) as total_lessons,
+      (select count(*) from challenges) as total_challenges,
+      coalesce((select avg(xp) from users), 0) as average_xp,
+      (select count(*) from users where xp > 0) as active_users
+  `) as unknown as any[];
+
+  const [totals] = totalsRows;
+  const data = {
+    ...totals,
+    average_xp: Number(totals.average_xp ?? 0),
+  };
+
+  adminAnalyticsCache = {
+    data,
+    expiresAt: Date.now() + ADMIN_CACHE_TTL_MS,
+  };
+
+  return data;
+}
+
+function invalidateAdminCaches() {
+  adminCoursesTreeCache = null;
+  adminAnalyticsCache = null;
 }
 
 async function getCompletedLessonIds(userId: number) {
@@ -521,26 +582,12 @@ async function handleGet(request: NextRequest, slug: string[]) {
 
   if (slug[0] === "admin" && slug[1] === "analytics") {
     await requireAdmin(request);
-    const totalsRows = (await sql`
-      select
-        (select count(*) from users) as total_users,
-        (select count(*) from courses) as total_courses,
-        (select count(*) from units) as total_units,
-        (select count(*) from lessons) as total_lessons,
-        (select count(*) from challenges) as total_challenges,
-        coalesce((select avg(xp) from users), 0) as average_xp,
-        (select count(*) from users where xp > 0) as active_users
-    `) as unknown as any[];
-    const [totals] = totalsRows;
-    return json({
-      ...totals,
-      average_xp: Number(totals.average_xp ?? 0),
-    });
+    return json(await getCachedAdminAnalytics());
   }
 
   if (slug[0] === "admin" && slug[1] === "content" && slug[2] === "tree") {
     await requireAdmin(request);
-    return json(await fetchAdminCoursesTree());
+    return json(await getCachedAdminCoursesTree());
   }
 
   return errorResponse("Not found", 404);
@@ -1170,20 +1217,38 @@ async function routeRequest(
   try {
     const { slug } = await context.params;
     await ensureAppSchema();
+    const shouldInvalidateAdminCache =
+      method !== "GET" && slug[0] === "admin" && slug[1] === "content";
 
     if (method === "GET") {
       return await handleGet(request, slug);
     }
     if (method === "POST") {
-      return await handlePost(request, slug);
+      const response = await handlePost(request, slug);
+      if (shouldInvalidateAdminCache) {
+        invalidateAdminCaches();
+      }
+      return response;
     }
     if (method === "PATCH") {
-      return await handlePatch(request, slug);
+      const response = await handlePatch(request, slug);
+      if (shouldInvalidateAdminCache) {
+        invalidateAdminCaches();
+      }
+      return response;
     }
     if (method === "PUT") {
-      return await handlePut(request, slug);
+      const response = await handlePut(request, slug);
+      if (shouldInvalidateAdminCache) {
+        invalidateAdminCaches();
+      }
+      return response;
     }
-    return await handleDelete(request, slug);
+    const response = await handleDelete(request, slug);
+    if (shouldInvalidateAdminCache) {
+      invalidateAdminCaches();
+    }
+    return response;
   } catch (error) {
     if (error instanceof Error) {
       if (error.message === "Unauthorized") {

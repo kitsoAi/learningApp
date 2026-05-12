@@ -22,7 +22,7 @@ export function getSql() {
 
   const useSsl = !/localhost|127\.0\.0\.1/i.test(connectionString);
   cachedSql = postgres(connectionString, {
-    max: 1,
+    max: Number(process.env.POSTGRES_POOL_MAX || "5"),
     ssl: useSsl ? "require" : undefined,
     prepare: false,
     onnotice: () => {},

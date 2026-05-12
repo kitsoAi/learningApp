@@ -4,7 +4,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
 
 export const apiClient = axios.create({
   baseURL: API_URL,
-  timeout: 12000,
+  timeout: 30000,
 });
 
 // Request interceptor to add auth token

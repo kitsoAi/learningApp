@@ -48,7 +48,7 @@ export const AdminCoursesManager = ({
       const data = await Promise.race([
         adminApi.getCourseTree(),
         new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error("Admin course request timed out.")), 12000)
+          setTimeout(() => reject(new Error("Admin course request timed out.")), 30000)
         ),
       ]);
       setCourses(Array.isArray(data) ? data : []);
