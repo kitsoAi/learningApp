@@ -158,4 +158,9 @@ export const adminApi = {
     const response = await apiClient.get('/admin/analytics');
     return response.data;
   },
+
+  getCourseTree: async (): Promise<Course[]> => {
+    const response = await apiClient.get<Course[]>('/admin/content/tree');
+    return response.data;
+  },
 };

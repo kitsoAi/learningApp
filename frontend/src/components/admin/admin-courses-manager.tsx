@@ -15,7 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { courseApi, lessonApi } from "@/lib/api/courses";
+import { adminApi, courseApi, lessonApi } from "@/lib/api/courses";
 import { Course, Unit, Lesson } from "@/types/api";
 
 type AdminCoursesManagerProps = {
@@ -31,6 +31,7 @@ export const AdminCoursesManager = ({
 }: AdminCoursesManagerProps) => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUnit, setEditingUnit] = useState<Unit | null>(null);
@@ -41,11 +42,14 @@ export const AdminCoursesManager = ({
   const [activeUnitId, setActiveUnitId] = useState<number | null>(null);
 
   const fetchCourses = async () => {
+    setLoading(true);
+    setError(null);
     try {
-      const data = await courseApi.getCourses();
-      setCourses(data);
+      const data = await adminApi.getCourseTree();
+      setCourses(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Failed to fetch courses", error);
+      setError("Failed to load courses. Check your admin session and backend connection.");
     } finally {
       setLoading(false);
     }
@@ -113,6 +117,20 @@ export const AdminCoursesManager = ({
 
   if (loading) {
     return <div className="p-6 text-sm font-medium text-neutral-500">Loading course manager...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-4 p-6">
+        <div className="rounded-3xl border border-red-200 bg-red-50 p-6">
+          <h2 className="text-lg font-bold text-red-700">Courses failed to load</h2>
+          <p className="mt-2 text-sm font-medium text-red-600">{error}</p>
+          <Button className="mt-4" onClick={fetchCourses}>
+            Retry
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   const totalUnits = courses.reduce((sum, course) => sum + (course.units?.length || 0), 0);

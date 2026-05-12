@@ -198,6 +198,36 @@ async function fetchCourses(): Promise<any[]> {
   }));
 }
 
+async function fetchAdminCoursesTree(): Promise<any[]> {
+  const [courses, units, lessons] = (await Promise.all([
+    sql`select * from courses order by order_index asc, id asc`,
+    sql`select * from units order by order_index asc, id asc`,
+    sql`select * from lessons order by order_index asc, id asc`,
+  ])) as unknown as [any[], any[], any[]];
+
+  const lessonMap = new Map<number, any[]>();
+  for (const lesson of lessons) {
+    const group = lessonMap.get(lesson.unit_id) ?? [];
+    group.push(lesson);
+    lessonMap.set(lesson.unit_id, group);
+  }
+
+  const unitMap = new Map<number, any[]>();
+  for (const unit of units) {
+    const group = unitMap.get(unit.course_id) ?? [];
+    group.push({
+      ...unit,
+      lessons: lessonMap.get(unit.id) ?? [],
+    });
+    unitMap.set(unit.course_id, group);
+  }
+
+  return courses.map((course) => ({
+    ...course,
+    units: unitMap.get(course.id) ?? [],
+  }));
+}
+
 async function getCompletedLessonIds(userId: number) {
   const rows = (await sql`
     select lesson_id
@@ -506,6 +536,11 @@ async function handleGet(request: NextRequest, slug: string[]) {
       ...totals,
       average_xp: Number(totals.average_xp ?? 0),
     });
+  }
+
+  if (slug[0] === "admin" && slug[1] === "content" && slug[2] === "tree") {
+    await requireAdmin(request);
+    return json(await fetchAdminCoursesTree());
   }
 
   return errorResponse("Not found", 404);
