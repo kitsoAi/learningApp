@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import { type NextRequest, NextResponse } from "next/server";
 import type { TransactionSql } from "postgres";
 import { createAccessToken, createRefreshToken, verifyToken } from "@/lib/server/auth";
-import { getSql, sql } from "@/lib/server/db";
+import { ensureAppSchema, getSql, sql } from "@/lib/server/db";
 import { uploadPublicFile } from "@/lib/server/storage";
 
 type RouteContext = {
@@ -1133,6 +1133,7 @@ async function routeRequest(
 ) {
   try {
     const { slug } = await context.params;
+    await ensureAppSchema();
 
     if (method === "GET") {
       return await handleGet(request, slug);
