@@ -636,6 +636,22 @@ async function handleGet(request: NextRequest, slug: string[]) {
     );
   }
 
+  if (slug[0] === "leaderboard" && slug.length === 1) {
+    const rows = await sql`
+      select
+        id,
+        full_name,
+        email,
+        image_src,
+        xp
+      from users
+      where is_active = true
+      order by xp desc, points desc, id asc
+      limit 100
+    `;
+    return json(rows);
+  }
+
   if (slug[0] === "admin" && slug[1] === "analytics") {
     await requireAdmin(request);
     return json(await getCachedAdminAnalytics());

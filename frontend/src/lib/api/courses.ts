@@ -1,5 +1,5 @@
 import apiClient from '../api';
-import type { Course, Unit, Lesson, Challenge, ChallengeOption, LessonSavePayload } from '@/types/api';
+import type { Course, Unit, Lesson, Challenge, ChallengeOption, LessonSavePayload, LeaderboardEntry } from '@/types/api';
 
 export const courseApi = {
   // Get all courses
@@ -166,6 +166,13 @@ export const adminApi = {
 
   getCourseTree: async (): Promise<Course[]> => {
     const response = await apiClient.get<Course[]>('/admin/content/tree');
+    return response.data;
+  },
+};
+
+export const leaderboardApi = {
+  getLeaderboard: async (): Promise<LeaderboardEntry[]> => {
+    const response = await apiClient.get<LeaderboardEntry[]>('/leaderboard');
     return response.data;
   },
 };

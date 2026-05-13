@@ -110,7 +110,7 @@ export default function ProfilePage() {
           hasActiveSubscription={false}
         />
         <Promo />
-        <Quests points={user.points} />
+        <Quests points={user.points} streakCount={user.streak_count} />
       </StickyWrapper>
       <FeedWrapper>
         <div className="w-full flex flex-col items-center">

@@ -152,3 +152,11 @@ export interface Quest {
 export interface QuestProgress extends Quest {
   completed: boolean;
 }
+
+export interface LeaderboardEntry {
+  id: number;
+  full_name?: string | null;
+  email: string;
+  image_src?: string | null;
+  xp: number;
+}
