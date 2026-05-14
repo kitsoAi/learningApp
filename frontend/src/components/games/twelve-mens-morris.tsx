@@ -1,48 +1,19 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { Brain, Gamepad2, RotateCcw, Sparkles, Swords, Volume2, VolumeX } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Gamepad2, RotateCcw, Sparkles, Swords, Volume2, VolumeX } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   BOARD_POINTS,
   CONNECTIONS,
-  type MorrisMode,
-  applyAIMove,
   applyHumanAction,
   createInitialState,
-  getAIMove,
   getLegalMoves,
   getRemovablePoints,
   type MorrisState,
 } from "@/lib/games/twelve-mens-morris";
-
-type GameStats = {
-  wins: number;
-  losses: number;
-  gamesPlayed: number;
-};
-
-const STORAGE_KEY = "setswana-games-morris-stats";
-
-function readStats(): GameStats {
-  if (typeof window === "undefined") {
-    return { wins: 0, losses: 0, gamesPlayed: 0 };
-  }
-
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (!saved) {
-    return { wins: 0, losses: 0, gamesPlayed: 0 };
-  }
-
-  try {
-    return JSON.parse(saved) as GameStats;
-  } catch {
-    localStorage.removeItem(STORAGE_KEY);
-    return { wins: 0, losses: 0, gamesPlayed: 0 };
-  }
-}
 
 function playTone(enabled: boolean, frequency: number, duration = 0.12) {
   if (!enabled || typeof window === "undefined") {
@@ -67,47 +38,8 @@ function playTone(enabled: boolean, frequency: number, duration = 0.12) {
 }
 
 export function TwelveMensMorrisGame() {
-  const [mode, setMode] = useState<MorrisMode>("2player");
   const [soundOn, setSoundOn] = useState(true);
-  const [stats, setStats] = useState<GameStats>(() => readStats());
   const [state, setState] = useState<MorrisState>(() => createInitialState());
-
-  const recordResult = useCallback((winner: 1 | 2 | null) => {
-    if (mode !== "ai" || winner === null) {
-      return;
-    }
-
-    setStats((current) => {
-      const next = {
-        wins: current.wins + (winner === 1 ? 1 : 0),
-        losses: current.losses + (winner === 2 ? 1 : 0),
-        gamesPlayed: current.gamesPlayed + 1,
-      };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-      return next;
-    });
-  }, [mode]);
-
-  useEffect(() => {
-    if (mode !== "ai" || state.gameOver || state.currentPlayer !== 2) {
-      return;
-    }
-
-    const timer = window.setTimeout(() => {
-      const move = getAIMove(state);
-      if (!move) {
-        return;
-      }
-      const next = applyAIMove(state, move);
-      playTone(soundOn, next.removingPiece ? 660 : 520);
-      if (next.gameOver) {
-        recordResult(next.winner);
-      }
-      setState(next);
-    }, 500);
-
-    return () => window.clearTimeout(timer);
-  }, [mode, recordResult, soundOn, state]);
 
   const highlightedPoints = useMemo(() => {
     if (state.removingPiece) {
@@ -122,26 +54,12 @@ export function TwelveMensMorrisGame() {
       .map(({ index }) => index);
   }, [state]);
 
-  const startNewGame = (nextMode: MorrisMode) => {
-    setMode(nextMode);
-    setState(createInitialState());
-  };
-
-  const resetStats = () => {
-    const cleared = { wins: 0, losses: 0, gamesPlayed: 0 };
-    setStats(cleared);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(cleared));
-  };
-
   const onPointClick = (point: number) => {
     const result = applyHumanAction(state, point);
     if (!result.changed) {
       return;
     }
     playTone(soundOn, result.nextState.removingPiece ? 660 : 440);
-    if (result.nextState.gameOver) {
-      recordResult(result.nextState.winner);
-    }
     setState(result.nextState);
   };
 
@@ -153,17 +71,13 @@ export function TwelveMensMorrisGame() {
             <p className="mb-3 text-xs font-bold uppercase tracking-[0.24em] text-emerald-700">Setswana Games</p>
             <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Play Twelve Men&apos;s Morris inside Puolingo</h1>
             <p className="mt-3 text-base font-medium text-slate-600">
-              Keep the learning platform open and jump straight into a classic strategy game inspired by regional play traditions.
+              Keep the learning platform open and jump straight into a classic local two-player strategy game inspired by regional play traditions.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Button variant={mode === "2player" ? "secondary" : "outline"} onClick={() => startNewGame("2player")}>
+            <Button variant="secondary" onClick={() => setState(createInitialState())}>
               <Swords className="mr-2 h-4 w-4" />
-              Two Players
-            </Button>
-            <Button variant={mode === "ai" ? "secondary" : "outline"} onClick={() => startNewGame("ai")}>
-              <Brain className="mr-2 h-4 w-4" />
-              Play vs Computer
+              New Two-Player Match
             </Button>
             <Button variant="outline" onClick={() => setSoundOn((value) => !value)}>
               {soundOn ? <Volume2 className="mr-2 h-4 w-4" /> : <VolumeX className="mr-2 h-4 w-4" />}
@@ -240,15 +154,15 @@ export function TwelveMensMorrisGame() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex flex-wrap gap-2">
-                <Badge variant="outline">{mode === "ai" ? "Single Player" : "Local Versus"}</Badge>
+                <Badge variant="outline">Local Versus</Badge>
                 <Badge variant="outline">{state.phase === "placement" ? "Placement Phase" : "Movement Phase"}</Badge>
                 {state.gameOver ? (
                   <Badge variant={state.winner === 1 ? "secondary" : "destructive"}>
-                    {mode === "ai" ? (state.winner === 1 ? "You Win" : "Computer Wins") : `Player ${state.winner} Wins`}
+                    {`Player ${state.winner} Wins`}
                   </Badge>
                 ) : (
                   <Badge variant={state.currentPlayer === 1 ? "secondary" : "default"}>
-                    {mode === "ai" ? (state.currentPlayer === 1 ? "Your Turn" : "Computer Turn") : `Player ${state.currentPlayer} Turn`}
+                    {`Player ${state.currentPlayer} Turn`}
                   </Badge>
                 )}
               </div>
@@ -260,9 +174,7 @@ export function TwelveMensMorrisGame() {
                   <p className="text-sm font-semibold text-slate-700">Pieces on board: {state.boardPieces[0]}</p>
                 </div>
                 <div className="rounded-2xl bg-rose-50 p-4">
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-rose-700">
-                    {mode === "ai" ? "Computer" : "Player Two"}
-                  </p>
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-rose-700">Player Two</p>
                   <p className="mt-2 text-sm font-semibold text-slate-700">Pieces to place: {state.unplacedPieces[1]}</p>
                   <p className="text-sm font-semibold text-slate-700">Pieces on board: {state.boardPieces[1]}</p>
                 </div>
@@ -282,35 +194,9 @@ export function TwelveMensMorrisGame() {
               <p>Once all pieces are placed, select one of your pieces and move it along a connected line to an empty point.</p>
               <p>If you are reduced to three pieces, you can jump to any empty point on the board.</p>
               <p>Win by reducing your opponent below three active pieces or by blocking every legal move.</p>
+              <p>This version is local two-player only for now, so both players take turns on the same device.</p>
             </CardContent>
           </Card>
-
-          {mode === "ai" ? (
-            <Card className="rounded-[2rem] border-slate-200 shadow-sm">
-              <CardHeader>
-                <CardTitle className="text-xl font-extrabold text-slate-900">Your Record</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-3 gap-3 text-center">
-                  <div className="rounded-2xl bg-emerald-50 p-3">
-                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">Wins</p>
-                    <p className="mt-2 text-2xl font-extrabold text-slate-900">{stats.wins}</p>
-                  </div>
-                  <div className="rounded-2xl bg-slate-100 p-3">
-                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-600">Games</p>
-                    <p className="mt-2 text-2xl font-extrabold text-slate-900">{stats.gamesPlayed}</p>
-                  </div>
-                  <div className="rounded-2xl bg-rose-50 p-3">
-                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-rose-700">Losses</p>
-                    <p className="mt-2 text-2xl font-extrabold text-slate-900">{stats.losses}</p>
-                  </div>
-                </div>
-                <Button variant="outline" className="w-full" onClick={resetStats}>
-                  Reset Record
-                </Button>
-              </CardContent>
-            </Card>
-          ) : null}
         </div>
       </div>
     </div>
