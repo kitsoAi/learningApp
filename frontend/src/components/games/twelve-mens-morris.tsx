@@ -243,11 +243,11 @@ export function TwelveMensMorrisGame() {
                 <Badge variant="outline">{mode === "ai" ? "Single Player" : "Local Versus"}</Badge>
                 <Badge variant="outline">{state.phase === "placement" ? "Placement Phase" : "Movement Phase"}</Badge>
                 {state.gameOver ? (
-                  <Badge variant={state.winner === 1 ? "secondary" : "danger"}>
+                  <Badge variant={state.winner === 1 ? "secondary" : "destructive"}>
                     {mode === "ai" ? (state.winner === 1 ? "You Win" : "Computer Wins") : `Player ${state.winner} Wins`}
                   </Badge>
                 ) : (
-                  <Badge variant={state.currentPlayer === 1 ? "secondary" : "super"}>
+                  <Badge variant={state.currentPlayer === 1 ? "secondary" : "default"}>
                     {mode === "ai" ? (state.currentPlayer === 1 ? "Your Turn" : "Computer Turn") : `Player ${state.currentPlayer} Turn`}
                   </Badge>
                 )}
