@@ -1,0 +1,88 @@
+{
+  "gameTitle": "Setswana Dithamalakane le Diane",
+  "language": "tn",
+  "version": "1.0.0",
+  "description": "A Puolingo-ready Setswana riddle and proverb quiz game with two categories: Dithamalakane and Diane.",
+  "categories": [
+    {
+      "id": "dithamalakane",
+      "title": "Dithamalakane",
+      "type": "riddle_game",
+      "instruction": "Buisa lelepa, o tlhophe karabo e e nepagetseng.",
+      "items": [
+        {"id": 1, "lelepa": "Ka kgwarinya lobota, badimo batla ba ntshetse morago.", "answer": "Ditlhase", "options": ["Ditlhase", "Pula", "Metsi", "Dinaledi"], "imageLabel": "sparks"},
+        {"id": 2, "lelepa": "Baloi ba mminamitlwaneng.", "answer": "Marothodi a pula", "options": ["Marothodi a pula", "Ngwedi", "Metsi", "Matlho"], "imageLabel": "rain_drops"},
+        {"id": 3, "lelepa": "Bana ba a bina mme mmabo ga a bine.", "answer": "Setlhare le makala a sona mo phefong", "options": ["Setlhare le makala a sona mo phefong", "Pula", "Kgomo", "Tsela"], "imageLabel": "tree_branches"},
+        {"id": 4, "lelepa": "Basimane ba ba tlhola ba lelekane mme ba sa tshwarane.", "answer": "Maotwana a koloi", "options": ["Maotwana a koloi", "Ditlhako", "Dikgomo", "Metsi"], "imageLabel": "car_wheels"},
+        {"id": 5, "lelepa": "Bosumane wa go swela tsotlhe.", "answer": "Selei", "options": ["Selei", "Molelo", "Pitsa", "Pula"], "imageLabel": "needle"},
+        {"id": 6, "lelepa": "Buruburu, rradijase.", "answer": "Setlhong", "options": ["Setlhong", "Metsi", "Dinaledi", "Ngwedi"], "imageLabel": "stump"},
+        {"id": 7, "lelepa": "Dikgomo tse di tshwaana, tse di poo khonou.", "answer": "Meno le loleme", "options": ["Meno le loleme", "Matlho", "Pula", "Metsi"], "imageLabel": "teeth_tongue"},
+        {"id": 8, "lelepa": "Dinonyane tsa masela kgakala, megatla e le tshwagong.", "answer": "Matlho", "options": ["Matlho", "Metsi", "Dinaledi", "Kgomo"], "imageLabel": "eyes"},
+        {"id": 9, "lelepa": "Ditloo tse pedi tse di mo pitseng.", "answer": "Matlho", "options": ["Matlho", "Ditlhase", "Molelo", "Pula"], "imageLabel": "eyes_two"},
+        {"id": 10, "lelepa": "Ditlou di bolola ka mophato bosigo mme bontsi ga bo di bone.", "answer": "Baloi", "options": ["Baloi", "Dinonyane", "Metsi", "Ngwedi"], "imageLabel": "witches"},
+        {"id": 11, "lelepa": "Go nna ga ntsanyana ya tshipi ke go kanama.", "answer": "Keetane", "options": ["Keetane", "Molelo", "Ngwedi", "Metsi"], "imageLabel": "chain"},
+        {"id": 12, "lelepa": "Golo fano re lekantswe re apere kobo ya tholo.", "answer": "Moriri", "options": ["Moriri", "Dinaledi", "Metsi", "Kgomo"], "imageLabel": "hair"},
+        {"id": 13, "lelepa": "Ka anega bosane ntle, ya re ke tsoga, ka fitlhela ba seyo.", "answer": "Dinaledi", "options": ["Dinaledi", "Pula", "Metsi", "Molora"], "imageLabel": "stars"},
+        {"id": 14, "lelepa": "Ka di latlhela makgabaneng tsa tla di mphulere.", "answer": "Molora wa leiso", "options": ["Molora wa leiso", "Pula", "Metsi", "Dikgomo"], "imageLabel": "ash"},
+        {"id": 15, "lelepa": "Ka itaya mpipi, mpipi a gana go tswa lebadi.", "answer": "Metsi", "options": ["Metsi", "Pula", "Molelo", "Ngwedi"], "imageLabel": "water"},
+        {"id": 16, "lelepa": "Ka itaya mpipi, mpipi a tswa lebadi.", "answer": "Diretse", "options": ["Diretse", "Pitsa", "Metsi", "Pula"], "imageLabel": "mud"},
+        {"id": 17, "lelepa": "Ka kopana le monnamogolo, yare a mpona a tsenya tlhogo.", "answer": "Khudu", "options": ["Khudu", "Kgomo", "Metsi", "Pula"], "imageLabel": "tortoise"},
+        {"id": 18, "lelepa": "Ka lapa, a sala.", "answer": "Tsela", "options": ["Tsela", "Metsi", "Ngwedi", "Dikgomo"], "imageLabel": "road"},
+        {"id": 19, "lelepa": "Ka mmotsa dikgang ke didimetse.", "answer": "Go bala", "options": ["Go bala", "Go opela", "Go tsamaya", "Go ja"], "imageLabel": "reading"},
+        {"id": 20, "lelepa": "Ke ale a bopepeltse, Matebele.", "answer": "Ditshoswane", "options": ["Ditshoswane", "Metsi", "Pula", "Ngwedi"], "imageLabel": "ants"},
+        {"id": 21, "lelepa": "Ke golegile koloi; dikgomo di a tsamaya, yone e eme.", "answer": "Noka", "options": ["Noka", "Pitsa", "Molelo", "Metsi"], "imageLabel": "river"},
+        {"id": 22, "lelepa": "Ke lepelela modubeng, ka re: Rra Nthuta pula.", "answer": "Pula", "options": ["Pula", "Ngwedi", "Dinaledi", "Molelo"], "imageLabel": "rain"},
+        {"id": 23, "lelepa": "Ke sale ke kgwathisa basimane maloba.", "answer": "Ditlhomeso", "options": ["Ditlhomeso", "Dikgomo", "Metsi", "Tsela"], "imageLabel": "supports"},
+        {"id": 24, "lelepa": "Ke sale ke roma mosimane, le gompieno ga a ise a boe.", "answer": "Lerumo", "options": ["Lerumo", "Pitsa", "Pula", "Molelo"], "imageLabel": "spear"},
+        {"id": 25, "lelepa": "Kgomo ya etsho ya wela bodibeng, ka sala ke e tshwere ka mogatla.", "answer": "Sego", "options": ["Sego", "Metsi", "Ngwedi", "Pitsa"], "imageLabel": "ladle"}
+      ]
+    },
+    {
+      "id": "diane",
+      "title": "Diane le Ditlhaloso",
+      "type": "proverb_meaning_match",
+      "instruction": "Buisa seane, o tlhophe tlhaloso e e nepagetseng.",
+      "items": [
+        {"id": 1, "seane": "Bana mamphorwana maatlhamela babolai", "tlhaloso": "Bana ga ba na molato.", "options": ["Bana ga ba na molato.", "Go le tsididi.", "Mafoko ga se ditiro.", "Motho ke motho ka batho ba bangwe."]},
+        {"id": 2, "seane": "Banna matshootshoo ba tshosana ka marota", "tlhaloso": "Ponagalo ya motho e a tsietsa.", "options": ["Ponagalo ya motho e a tsietsa.", "Batho ba tshwanetse go thusana.", "Ngwana o rutwa bonnyeng.", "Go bona go gaisa go bolelelwa."]},
+        {"id": 3, "seane": "Bodiba ba go ja ngwana wa ga mmaago bo sikologe", "tlhaloso": "Fa sengwe se se bosula se diragaletse wa gaeno, se ka go diragalela le wena.", "options": ["Fa sengwe se se bosula se diragaletse wa gaeno, se ka go diragalela le wena.", "Mafoko a ka utlwisa botlhoko.", "Motho a le esi ga a kgone tsotlhe.", "Tiro e monate fa e dirwa mmogo."]},
+        {"id": 4, "seane": "Bontle bo na le dibelebetshane", "tlhaloso": "Bontle jwa ka fa ntle bo ka tsietsa.", "options": ["Bontle jwa ka fa ntle bo ka tsietsa.", "Molao o tshwanetse go obamelwa.", "Yo monnye a ka gakolola mogolo.", "Ditiro tsa mo lefifing ga di siama."]},
+        {"id": 5, "seane": "Bosigo ga bo rone nta", "tlhaloso": "Ditiro tsa mo lefifing ga di nke di siama.", "options": ["Ditiro tsa mo lefifing ga di nke di siama.", "Bana ga ba na molato.", "Go dira ka bonako go a senya.", "Batho ba tla kopana gape."]},
+        {"id": 6, "seane": "Botlhale jwa phala bo tswa phalaneng", "tlhaloso": "Ngwana kgotsa yo monnye a ka gakolola mogolo.", "options": ["Ngwana kgotsa yo monnye a ka gakolola mogolo.", "Mafoko ga se ditiro.", "Motho ke motho ka batho ba bangwe.", "Go bona go gaisa go bolelelwa."]},
+        {"id": 7, "seane": "Di sa kopaneng ke dithaba", "tlhaloso": "Batho ba ka kopana gape le fa ba ne ba kgaogane.", "options": ["Batho ba ka kopana gape le fa ba ne ba kgaogane.", "Mafoko a ka se boe.", "Motho ga a latlhe mekgwa ya gagwe.", "Tiro e dirwa botoka ka kopanelo."]},
+        {"id": 8, "seane": "E tla re re re ke dipitse re di bone ka mebala", "tlhaloso": "Go bona go gaisa go bolelelwa.", "options": ["Go bona go gaisa go bolelelwa.", "Motho o itse tiro ya gagwe.", "Bana ba tshwanetse go laiwa.", "Mafoko ga se ditiro."]},
+        {"id": 9, "seane": "Foko la kgosi le agelwa mosako", "tlhaloso": "Fa molao o beilwe, mang le mang o tshwanetse go o obamela.", "options": ["Fa molao o beilwe, mang le mang o tshwanetse go o obamela.", "Bana ga ba na molato.", "Go le tsididi.", "Tiro ga e nke e pala fa e tlhakanetswe."]},
+        {"id": 10, "seane": "Kgetsi ya tsie e kgonwa ka go tshwaraganelwa", "tlhaloso": "Batho ba dira tiro botoka fa ba e dira ba kopanetse.", "options": ["Batho ba dira tiro botoka fa ba e dira ba kopanetse.", "Motho ga a latlhe mekgwa ya gagwe.", "Mafoko a kgopisa.", "Ngwana o rutwa molao bonnyeng."]},
+        {"id": 11, "seane": "Kgosi ke kgosi ka malata", "tlhaloso": "Motho ke motho ka batho ba bangwe.", "options": ["Motho ke motho ka batho ba bangwe.", "Go bona go gaisa go bolelelwa.", "Ngwana o rutwa molao bonnyeng.", "Mafoko ga se ditiro."]},
+        {"id": 12, "seane": "Kgosi thothobolo e olela matlakala", "tlhaloso": "Moeteledipele o rwala maikarabelo a balatedi ba gagwe.", "options": ["Moeteledipele o rwala maikarabelo a balatedi ba gagwe.", "Bontle bo ka tsietsa.", "Motho yo o sa bueng ga a thusiwe.", "Batho ba tla kopana gape."]},
+        {"id": 13, "seane": "Khudu ya mariga e itsiwe ke mmei", "tlhaloso": "Motho yo o beileng selo ke ene a itseng kwa se leng teng.", "options": ["Motho yo o beileng selo ke ene a itseng kwa se leng teng.", "Mafoko ga se ditiro.", "Go dira ka bonako go a senya.", "Motho o itsege ka ditiro tsa gagwe."]},
+        {"id": 14, "seane": "Lefoko ga le boe go boa monwana", "tlhaloso": "Mafoko a kgopisa mme ga a lebalege bonolo.", "options": ["Mafoko a kgopisa mme ga a lebalege bonolo.", "Tiro e dirwa botoka mmogo.", "Bana ba tshwanetse go laiwa.", "Go bona go gaisa go bolelelwa."]},
+        {"id": 15, "seane": "Lepotlapotla le ja podi, modikologa o ja kgomo ya tona", "tlhaloso": "Go molemo go ipha nako fa o dira tiro; go dira ka bonako go a senya.", "options": ["Go molemo go ipha nako fa o dira tiro; go dira ka bonako go a senya.", "Motho ke motho ka batho.", "Ponagalo ya motho e a tsietsa.", "Ditiro tsa mo lefifing ga di siama."]},
+        {"id": 16, "seane": "Lore lo ojwa lo sa le metsi", "tlhaloso": "Ngwana o rutwa molao a sa le monnye.", "options": ["Ngwana o rutwa molao a sa le monnye.", "Mafoko ga se ditiro.", "Motho a le esi ga a kgone tsotlhe.", "Seane se bontsha go kopana gape."]},
+        {"id": 17, "seane": "Mabogo dinku a thebana", "tlhaloso": "Batho ba dira tiro botoka fa ba thusana.", "options": ["Batho ba dira tiro botoka fa ba thusana.", "Mafoko a ka utlwisa botlhoko.", "Motho ga a latlhe mekgwa.", "Bontle bo ka tsietsa."]},
+        {"id": 18, "seane": "Maru ga se pula, mosi ke ona molelo", "tlhaloso": "Mafoko ga se ditiro; ditiro ke tsone tse di buang.", "options": ["Mafoko ga se ditiro; ditiro ke tsone tse di buang.", "Tiro e tshwanetse go dirwa ka bonako.", "Ngwana o tshwanetse go duelwa thomo.", "Motho o tshela a le esi."]},
+        {"id": 19, "seane": "Matlho ke diala ga a je sa motho", "tlhaloso": "Go leba selo sa motho ga go reye gore o se tsaya.", "options": ["Go leba selo sa motho ga go reye gore o se tsaya.", "Ditiro tsa mo lefifing ga di siama.", "Batho ba thusana mo mathateng.", "Go bona go gaisa go bolelelwa."]},
+        {"id": 20, "seane": "Moroto o o esi ga o ele", "tlhaloso": "Motho a le esi a ka se kgone go dira tiro e kgolo.", "options": ["Motho a le esi a ka se kgone go dira tiro e kgolo.", "Mafoko ga se ditiro.", "Ngwana o rutwa bonnyeng.", "Ponagalo e a tsietsa."]},
+        {"id": 21, "seane": "Ngwana yo a sa leleng o swela tharing", "tlhaloso": "Motho yo o sa bueng mathata a gagwe ga a kitla a bona thuso.", "options": ["Motho yo o sa bueng mathata a gagwe ga a kitla a bona thuso.", "Tiro ga e nke e pala fa e tlhakanetswe.", "Mafoko a boela morago.", "Molao ga o tlhokafale."]},
+        {"id": 22, "seane": "O se bone thola borethe, teng ga yone go a baba", "tlhaloso": "Ga se gore fa motho a le montle, mekgwa ya gagwe le yone e siame.", "options": ["Ga se gore fa motho a le montle, mekgwa ya gagwe le yone e siame.", "Go bona go gaisa go bolelelwa.", "Motho a le esi o dira botoka.", "Ngwana ga a rutwe bonnyeng."]},
+        {"id": 23, "seane": "O se tshege yo o weleng, mareledi a sa le pele", "tlhaloso": "O se ka wa sotla mongwe yo o weleng mo mathateng, ka gonne le wena o ka wela.", "options": ["O se ka wa sotla mongwe yo o weleng mo mathateng, ka gonne le wena o ka wela.", "Bana ga ba na molato.", "Mafoko ga se ditiro.", "Go dira tiro go santse go le phakela go botoka."]},
+        {"id": 24, "seane": "Phiri e sola bobowa, mokgwa ga e o latlhe", "tlhaloso": "Motho ga a nke a latlha mekgwa ya gagwe bonolo.", "options": ["Motho ga a nke a latlha mekgwa ya gagwe bonolo.", "Ngwana o rutwa molao bonnyeng.", "Batho ba dira tiro botoka mmogo.", "Mafoko a kgopisa."]},
+        {"id": 25, "seane": "Tlhotsa pele ga se swa pele", "tlhaloso": "Go simolola ka mathata ga go reye gore motho ga a kitla a atlega.", "options": ["Go simolola ka mathata ga go reye gore motho ga a kitla a atlega.", "Ponagalo ya motho e a tsietsa.", "Bana ga ba na molato.", "Motho yo o sa bueng ga a thusiwe."]}
+      ]
+    }
+  ],
+  "scoring": {
+    "correctAnswer": 10,
+    "wrongAnswer": 0,
+    "hintPenalty": 2
+  },
+  "uiLabels": {
+    "chooseAnswer": "Tlhopha Karabo",
+    "correct": "Go siame!",
+    "wrong": "Ga go a siama",
+    "next": "E e latelang",
+    "results": "Dipoelo",
+    "retry": "Boela gape",
+    "backToCategories": "Boela kwa dikarolong"
+  }
+}
