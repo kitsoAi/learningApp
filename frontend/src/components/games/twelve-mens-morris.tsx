@@ -112,21 +112,44 @@ export function TwelveMensMorrisGame() {
                   const piece = state.board[index];
                   const isSelected = state.selectedPoint === index;
                   const isHighlighted = highlightedPoints.includes(index);
+                  const isEmpty = piece === 0;
                   return (
                     <g key={index}>
                       {isHighlighted ? (
                         <circle cx={point.x} cy={point.y} r="5.8" fill={state.removingPiece ? "rgba(248,113,113,0.25)" : "rgba(74,222,128,0.26)"} />
                       ) : null}
+                      {isEmpty ? (
+                        <>
+                          <circle
+                            cx={point.x}
+                            cy={point.y}
+                            r="2.15"
+                            fill="#dbe4f3"
+                            stroke={isHighlighted ? "#4ade80" : "#334155"}
+                            strokeWidth={isHighlighted ? "0.95" : "0.75"}
+                            className="cursor-pointer"
+                            onClick={() => onPointClick(index)}
+                          />
+                          <circle
+                            cx={point.x}
+                            cy={point.y}
+                            r="0.82"
+                            fill={isHighlighted ? "#86efac" : "#0f172a"}
+                            pointerEvents="none"
+                          />
+                        </>
+                      ) : (
                       <circle
                         cx={point.x}
                         cy={point.y}
                         r="3.8"
-                        fill={piece === 1 ? "#38bdf8" : piece === 2 ? "#fb7185" : "#ffffff"}
+                        fill={piece === 1 ? "#38bdf8" : "#fb7185"}
                         stroke={isSelected ? "#fde047" : "#0f172a"}
                         strokeWidth={isSelected ? "1.4" : "1"}
-                        className="cursor-pointer transition-transform hover:scale-110"
+                        className="cursor-pointer"
                         onClick={() => onPointClick(index)}
                       />
+                      )}
                       {piece !== 0 ? (
                         <circle
                           cx={point.x - 0.7}
