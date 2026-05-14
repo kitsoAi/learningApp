@@ -304,10 +304,10 @@ function scoreMove(state: MorrisState, from: number, to: number) {
   return score;
 }
 
-function pickBest<T>(items: CandidateScore[]) {
+function pickBest(items: CandidateScore[]) {
   const maxScore = Math.max(...items.map((item) => item.score));
   const best = items.filter((item) => item.score === maxScore);
-  return best[Math.floor(Math.random() * best.length)] as T;
+  return best[Math.floor(Math.random() * best.length)];
 }
 
 export function getAIMove(state: MorrisState): MorrisAIMove | null {
@@ -332,7 +332,7 @@ export function getAIMove(state: MorrisState): MorrisAIMove | null {
         move: { type: "place", to: index } as MorrisAIMove,
         score: scorePlacement(state.board, 2, index),
       }));
-    return candidates.length ? pickBest<MorrisAIMove>(candidates).move : null;
+    return candidates.length ? pickBest(candidates).move : null;
   }
 
   const candidates: CandidateScore[] = [];
@@ -348,7 +348,7 @@ export function getAIMove(state: MorrisState): MorrisAIMove | null {
     });
   });
 
-  return candidates.length ? pickBest<MorrisAIMove>(candidates).move : null;
+  return candidates.length ? pickBest(candidates).move : null;
 }
 
 export function applyAIMove(state: MorrisState, move: MorrisAIMove): MorrisState {
@@ -363,4 +363,3 @@ export function applyAIMove(state: MorrisState, move: MorrisAIMove): MorrisState
   const selected = applyHumanAction({ ...state }, move.from).nextState;
   return applyHumanAction(selected, move.to).nextState;
 }
-
