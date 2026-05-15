@@ -1,5 +1,6 @@
 import { Volume2 } from "lucide-react";
 import { formatAssetUrl } from "@/lib/utils";
+import { playCachedAudio } from "@/lib/audio";
 
 type Props = {
   question: string;
@@ -10,7 +11,7 @@ export const QuestionBubble = ({ question, audioSrc }: Props) => {
   const onPlay = () => {
     const fullUrl = formatAssetUrl(audioSrc);
     if (fullUrl) {
-      new Audio(fullUrl).play().catch(() => {});
+      playCachedAudio(fullUrl);
     }
   };
 

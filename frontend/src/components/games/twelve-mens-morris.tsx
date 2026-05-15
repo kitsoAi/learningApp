@@ -5,6 +5,7 @@ import { Gamepad2, RotateCcw, Sparkles, Swords, Volume2, VolumeX } from "lucide-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getSharedAudioContext } from "@/lib/audio";
 import {
   BOARD_POINTS,
   CONNECTIONS,
@@ -20,12 +21,13 @@ function playTone(enabled: boolean, frequency: number, duration = 0.12) {
     return;
   }
 
-  const AudioContextCtor = window.AudioContext || (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-  if (!AudioContextCtor) {
+  const context = getSharedAudioContext();
+  if (!context) {
     return;
   }
-
-  const context = new AudioContextCtor();
+  if (context.state === "suspended") {
+    context.resume().catch(() => {});
+  }
   const oscillator = context.createOscillator();
   const gain = context.createGain();
   oscillator.connect(gain);

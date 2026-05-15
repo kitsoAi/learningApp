@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useWindowSize } from "react-use";
 import Confetti from "react-confetti";
@@ -12,6 +12,7 @@ import { QuestionBubble } from "./question-bubble";
 import { ChallengeComponent } from "./challenge";
 import { Footer } from "./footer";
 import { progressApi } from "@/lib/api/courses";
+import { playCachedAudio, primeAudio } from "@/lib/audio";
 import { toast } from "sonner";
 import { useAuthStore } from "@/store/auth";
 import { useCourseStore } from "@/store/course";
@@ -54,6 +55,12 @@ export const Quiz = ({
 
   const challenge = challenges[activeIndex];
   const options = challenge?.options ?? [];
+
+  useEffect(() => {
+    primeAudio("/assets/correct.mp3");
+    primeAudio("/assets/wrong.mp3");
+    primeAudio("/assets/lesson_finish.mp3");
+  }, []);
 
   const onNext = () => {
     setActiveIndex((current) => current + 1);
@@ -110,10 +117,10 @@ export const Quiz = ({
     if (isCorrect) {
       setStatus("correct");
       setPercentage((prev) => prev + 100 / challenges.length);
-      new Audio("/assets/correct.mp3").play().catch(() => {});
+      playCachedAudio("/assets/correct.mp3");
     } else {
       setStatus("wrong");
-      new Audio("/assets/wrong.mp3").play().catch(() => {});
+      playCachedAudio("/assets/wrong.mp3");
       if (!userSubscription) {
         setHearts((prev) => Math.max(prev - 1, 0));
         // TODO: show hearts modal if 0
@@ -161,7 +168,7 @@ export const Quiz = ({
           status="completed"
           onCheck={() => {
             startTransition(async () => {
-                new Audio("/assets/lesson_finish.mp3").play().catch(() => {});
+                playCachedAudio("/assets/lesson_finish.mp3");
                 try {
                     await progressApi.completeLesson(initialLessonId, initialHearts - hearts, 10);
                     completeLesson(initialLessonId); // Optimistic update
