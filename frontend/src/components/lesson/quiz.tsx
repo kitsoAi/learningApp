@@ -52,6 +52,7 @@ export const Quiz = ({
 
   const [selectedOption, setSelectedOption] = useState<number | string>();
   const [status, setStatus] = useState<"none" | "correct" | "wrong">("none");
+  const [mascotError, setMascotError] = useState(false);
 
   const challenge = challenges[activeIndex];
   const options = challenge?.options ?? [];
@@ -61,6 +62,26 @@ export const Quiz = ({
     primeAudio("/assets/wrong.mp3");
     primeAudio("/assets/lesson_finish.mp3");
   }, []);
+
+  useEffect(() => {
+    if (!challenge) {
+      return;
+    }
+
+    if (challenge.audio_src) {
+      primeAudio(challenge.audio_src);
+    }
+
+    for (const option of options) {
+      if (option.audio_src) {
+        primeAudio(option.audio_src);
+      }
+    }
+  }, [challenge, options]);
+
+  useEffect(() => {
+    setMascotError(false);
+  }, [status, activeIndex]);
 
   const onNext = () => {
     setActiveIndex((current) => current + 1);
@@ -205,6 +226,7 @@ export const Quiz = ({
     : status === "wrong" 
         ? "/mascot_kori_sad.png" 
         : "/mascot_kori_neutral.png";
+  const lessonMascotSrc = mascotError ? "/mascot.svg" : mascotSrc;
 
   return (
     <>
@@ -222,19 +244,21 @@ export const Quiz = ({
             
             <div className="flex flex-col gap-y-6">
               <div className="flex items-start sm:items-center gap-x-3 sm:gap-x-4 mb-2 w-full min-w-0">
-                <Image 
-                  src={mascotSrc} 
-                  height={150} 
-                  width={150} 
-                  alt="Mascot" 
-                  className="hidden lg:block"
+                <img
+                  src={lessonMascotSrc}
+                  height={150}
+                  width={150}
+                  alt="Mascot"
+                  className="hidden lg:block object-contain"
+                  onError={() => setMascotError(true)}
                 />
-                <Image 
-                  src={mascotSrc} 
-                  height={100} 
-                  width={100} 
-                  alt="Mascot" 
-                  className="hidden sm:block lg:hidden shrink-0"
+                <img
+                  src={lessonMascotSrc}
+                  height={100}
+                  width={100}
+                  alt="Mascot"
+                  className="hidden sm:block lg:hidden shrink-0 object-contain"
+                  onError={() => setMascotError(true)}
                 />
                 <div className="flex-1 min-w-0">
                   <QuestionBubble 

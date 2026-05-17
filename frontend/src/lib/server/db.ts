@@ -20,15 +20,21 @@ function buildConnectionStringFromParts() {
 }
 
 function getConnectionString() {
-  return (
+  const connectionString =
     process.env.POSTGRES_PRISMA_URL ||
     process.env.POSTGRES_URL ||
     process.env.DATABASE_URL ||
     process.env.POSTGRES_URL_NON_POOLING ||
     process.env.DATABASE_URL_UNPOOLED ||
     process.env.POSTGRES_URL_NO_SSL ||
-    buildConnectionStringFromParts()
-  );
+    buildConnectionStringFromParts();
+
+  if (!connectionString) {
+    return null;
+  }
+
+  // Accept SQLAlchemy-style URLs from the legacy FastAPI setup.
+  return connectionString.replace(/^postgresql\+asyncpg:\/\//i, "postgresql://");
 }
 
 export function getSql() {
@@ -187,15 +193,8 @@ export async function ensureAppSchema() {
 
   if (!schemaInitPromise) {
     schemaInitPromise = (async () => {
-      const result = await sql`
-        select to_regclass('public.users') as users_table
-      `;
-
-      if (result[0]?.users_table) {
-        schemaVerified = true;
-        return;
-      }
-
+      // Run the idempotent schema creation every time the server boots so
+      // partially initialized databases still get the missing tables.
       await createSchema();
       schemaVerified = true;
     })().catch((error) => {

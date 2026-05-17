@@ -165,7 +165,13 @@ async function getCurrentUser(request: NextRequest, requireAuth = true) {
     return null;
   }
 
-  const payload = await verifyToken(token);
+  let payload;
+  try {
+    payload = await verifyToken(token);
+  } catch {
+    throw new Error("Unauthorized");
+  }
+
   const userId = Number(payload.sub);
   if (!userId) {
     throw new Error("Unauthorized");

@@ -1,3 +1,4 @@
+import axios from "axios";
 import apiClient from '../api';
 import type { Course, Unit, Lesson, Challenge, ChallengeOption, LessonSavePayload, LeaderboardEntry } from '@/types/api';
 
@@ -165,8 +166,19 @@ export const adminApi = {
   },
 
   getCourseTree: async (): Promise<Course[]> => {
-    const response = await apiClient.get<Course[]>('/admin/content/tree');
-    return response.data;
+    try {
+      const response = await apiClient.get<Course[]>('/admin/content/tree');
+      return response.data;
+    } catch (error) {
+      // The FastAPI backend exposes nested course data at /courses, but does not
+      // implement the dedicated /admin/content/tree endpoint used by the Next.js API.
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        const response = await apiClient.get<Course[]>('/courses');
+        return response.data;
+      }
+
+      throw error;
+    }
   },
 };
 
