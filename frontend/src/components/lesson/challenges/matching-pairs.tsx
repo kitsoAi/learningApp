@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { playCachedAudio } from "@/lib/audio";
 import { Volume2 } from "lucide-react";
 
 type Item = {
@@ -43,7 +44,7 @@ export const MatchingPairs = ({ pairs, onComplete, disabled }: Props) => {
     if (disabled || matchedIds.includes(item.pairId)) return;
 
     if (item.audioSrc) {
-       new Audio(item.audioSrc).play().catch(() => {});
+       playCachedAudio(item.audioSrc);
     }
 
     if (item.type === "source") {

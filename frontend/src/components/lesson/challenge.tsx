@@ -1,5 +1,6 @@
 import { ChallengeOption } from "@/types/api";
 import { cn } from "@/lib/utils";
+import { playCachedAudio } from "@/lib/audio";
 import { Button } from "@/components/ui/button";
 import { Volume2 } from "lucide-react";
 import { Card } from "./card";
@@ -65,7 +66,7 @@ export const ChallengeComponent = ({
       return (
           <div className="flex flex-col gap-y-4">
                <Button 
-                onClick={() => new Audio(audioSrc).play()}
+                onClick={() => audioSrc && playCachedAudio(audioSrc)}
                 variant="secondary"
                 className="w-fit"
                >

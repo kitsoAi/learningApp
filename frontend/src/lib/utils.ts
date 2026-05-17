@@ -17,5 +17,5 @@ export function formatAssetUrl(path?: string | null) {
   if (cleanPath.startsWith("/uploads/")) {
     return `${BACKEND_URL}${cleanPath}`;
   }
-  return path;
+  return cleanPath;
 }

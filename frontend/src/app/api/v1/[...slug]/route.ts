@@ -3,8 +3,11 @@ import bcrypt from "bcryptjs";
 import { type NextRequest, NextResponse } from "next/server";
 import type { TransactionSql } from "postgres";
 import { createAccessToken, createRefreshToken, verifyToken } from "@/lib/server/auth";
-import { getSql, sql } from "@/lib/server/db";
+import { ensureAppSchema, getSql, sql } from "@/lib/server/db";
 import { uploadPublicFile } from "@/lib/server/storage";
+
+export const runtime = "nodejs";
+export const maxDuration = 60;
 
 type RouteContext = {
   params: Promise<{
@@ -31,6 +34,15 @@ type DbUser = {
   updated_at?: string;
 };
 
+type CachedValue<T> = {
+  data: T;
+  expiresAt: number;
+};
+
+const ADMIN_CACHE_TTL_MS = 30_000;
+let adminCoursesTreeCache: CachedValue<any[]> | null = null;
+let adminAnalyticsCache: CachedValue<Record<string, unknown>> | null = null;
+
 function json(data: unknown, init?: ResponseInit) {
   return NextResponse.json(data, init);
 }
@@ -42,6 +54,62 @@ function errorResponse(detail: string, status = 400) {
 function parseId(value: string | undefined) {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : null;
+}
+
+function hasOwn(body: unknown, key: string) {
+  if (!body || typeof body !== "object") {
+    return false;
+  }
+  return Object.prototype.hasOwnProperty.call(body, key);
+}
+
+function parseOptionalNumber(value: unknown) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function getFileExtension(file: File) {
+  return file.name.split(".").pop()?.toLowerCase() || "";
+}
+
+function isImageFile(file: File) {
+  const extension = getFileExtension(file);
+  const allowedImageExtensions = new Set([
+    "png",
+    "jpg",
+    "jpeg",
+    "svg",
+    "webp",
+    "gif",
+    "avif",
+    "bmp",
+    "ico",
+    "jfif",
+    "pjpeg",
+    "pjp",
+    "tif",
+    "tiff",
+    "heic",
+    "heif",
+  ]);
+
+  return file.type.startsWith("image/") || allowedImageExtensions.has(extension);
+}
+
+function isAudioFile(file: File) {
+  const extension = getFileExtension(file);
+  const allowedAudioExtensions = new Set([
+    "mp3",
+    "wav",
+    "ogg",
+    "m4a",
+    "aac",
+    "flac",
+    "webm",
+    "mp4",
+  ]);
+
+  return file.type.startsWith("audio/") || allowedAudioExtensions.has(extension);
 }
 
 function serializeUser(user: DbUser) {
@@ -196,6 +264,85 @@ async function fetchCourses(): Promise<any[]> {
     ...course,
     units: unitMap.get(course.id) ?? [],
   }));
+}
+
+async function fetchAdminCoursesTree(): Promise<any[]> {
+  const [courses, units, lessons] = (await Promise.all([
+    sql`select * from courses order by order_index asc, id asc`,
+    sql`select * from units order by order_index asc, id asc`,
+    sql`select * from lessons order by order_index asc, id asc`,
+  ])) as unknown as [any[], any[], any[]];
+
+  const lessonMap = new Map<number, any[]>();
+  for (const lesson of lessons) {
+    const group = lessonMap.get(lesson.unit_id) ?? [];
+    group.push(lesson);
+    lessonMap.set(lesson.unit_id, group);
+  }
+
+  const unitMap = new Map<number, any[]>();
+  for (const unit of units) {
+    const group = unitMap.get(unit.course_id) ?? [];
+    group.push({
+      ...unit,
+      lessons: lessonMap.get(unit.id) ?? [],
+    });
+    unitMap.set(unit.course_id, group);
+  }
+
+  return courses.map((course) => ({
+    ...course,
+    units: unitMap.get(course.id) ?? [],
+  }));
+}
+
+async function getCachedAdminCoursesTree(): Promise<any[]> {
+  if (adminCoursesTreeCache && adminCoursesTreeCache.expiresAt > Date.now()) {
+    return adminCoursesTreeCache.data;
+  }
+
+  const tree = await fetchAdminCoursesTree();
+  adminCoursesTreeCache = {
+    data: tree,
+    expiresAt: Date.now() + ADMIN_CACHE_TTL_MS,
+  };
+
+  return tree;
+}
+
+async function getCachedAdminAnalytics() {
+  if (adminAnalyticsCache && adminAnalyticsCache.expiresAt > Date.now()) {
+    return adminAnalyticsCache.data;
+  }
+
+  const totalsRows = (await sql`
+    select
+      (select count(*) from users) as total_users,
+      (select count(*) from courses) as total_courses,
+      (select count(*) from units) as total_units,
+      (select count(*) from lessons) as total_lessons,
+      (select count(*) from challenges) as total_challenges,
+      coalesce((select avg(xp) from users), 0) as average_xp,
+      (select count(*) from users where xp > 0) as active_users
+  `) as unknown as any[];
+
+  const [totals] = totalsRows;
+  const data = {
+    ...totals,
+    average_xp: Number(totals.average_xp ?? 0),
+  };
+
+  adminAnalyticsCache = {
+    data,
+    expiresAt: Date.now() + ADMIN_CACHE_TTL_MS,
+  };
+
+  return data;
+}
+
+function invalidateAdminCaches() {
+  adminCoursesTreeCache = null;
+  adminAnalyticsCache = null;
 }
 
 async function getCompletedLessonIds(userId: number) {
@@ -489,23 +636,30 @@ async function handleGet(request: NextRequest, slug: string[]) {
     );
   }
 
+  if (slug[0] === "leaderboard" && slug.length === 1) {
+    const rows = await sql`
+      select
+        id,
+        full_name,
+        email,
+        image_src,
+        xp
+      from users
+      where is_active = true
+      order by xp desc, points desc, id asc
+      limit 100
+    `;
+    return json(rows);
+  }
+
   if (slug[0] === "admin" && slug[1] === "analytics") {
     await requireAdmin(request);
-    const totalsRows = (await sql`
-      select
-        (select count(*) from users) as total_users,
-        (select count(*) from courses) as total_courses,
-        (select count(*) from units) as total_units,
-        (select count(*) from lessons) as total_lessons,
-        (select count(*) from challenges) as total_challenges,
-        coalesce((select avg(xp) from users), 0) as average_xp,
-        (select count(*) from users where xp > 0) as active_users
-    `) as unknown as any[];
-    const [totals] = totalsRows;
-    return json({
-      ...totals,
-      average_xp: Number(totals.average_xp ?? 0),
-    });
+    return json(await getCachedAdminAnalytics());
+  }
+
+  if (slug[0] === "admin" && slug[1] === "content" && slug[2] === "tree") {
+    await requireAdmin(request);
+    return json(await getCachedAdminCoursesTree());
   }
 
   return errorResponse("Not found", 404);
@@ -549,6 +703,7 @@ async function handlePost(request: NextRequest, slug: string[]) {
       access_token: await createAccessToken(user.id),
       token_type: "bearer",
       refresh_token: await createRefreshToken(user.id),
+      user: serializeUser(user),
     });
   }
 
@@ -728,9 +883,8 @@ async function handlePost(request: NextRequest, slug: string[]) {
   if (slug[0] === "users" && slug[1] === "upload") {
     const user = await getRequiredUser(request);
     const file = await readMultipartFile(request);
-    const extension = file.name.split(".").pop()?.toLowerCase() || "";
 
-    if (!["png", "jpg", "jpeg", "svg", "webp"].includes(extension)) {
+    if (!isImageFile(file)) {
       return errorResponse("Invalid image type", 400);
     }
 
@@ -820,20 +974,117 @@ async function handlePost(request: NextRequest, slug: string[]) {
   if (slug[0] === "admin" && slug[1] === "content" && slug[2] === "upload") {
     await requireAdmin(request);
     const file = await readMultipartFile(request);
-    const extension = file.name.split(".").pop()?.toLowerCase() || "";
-    const allowedExtensions = ["png", "jpg", "jpeg", "svg", "webp", "mp3", "wav", "ogg", "m4a"];
 
-    if (!allowedExtensions.includes(extension)) {
-      return errorResponse("Invalid file type", 400);
+    if (!isImageFile(file) && !isAudioFile(file)) {
+      return errorResponse("Invalid file type. Upload an image or audio file.", 400);
     }
 
     const uploaded = await uploadPublicFile(file, "admin");
     return json({ url: uploaded.url, filename: uploaded.filename });
   }
 
+  if (
+    slug[0] === "admin" &&
+    slug[1] === "content" &&
+    slug[2] === "lessons" &&
+    slug[4] === "save"
+  ) {
+    await requireAdmin(request);
+    const lessonId = parseId(slug[3]);
+    if (!lessonId) {
+      return errorResponse("Invalid lesson id", 400);
+    }
+
+    const body = ((await readJson(request)) ?? {}) as {
+      title?: string;
+      unit_id?: number;
+      order_index?: number;
+      challenges?: Array<{
+        type?: string;
+        question?: string;
+        correct_text?: string | null;
+        audio_src?: string | null;
+        order_index?: number;
+        options?: Array<{
+          text?: string;
+          correct?: boolean;
+          image_src?: string | null;
+          audio_src?: string | null;
+        }>;
+      }>;
+    };
+
+    const unitId = parseOptionalNumber(body.unit_id);
+    const orderIndex = parseOptionalNumber(body.order_index);
+    if (!unitId) {
+      return errorResponse("Lesson save requires a valid unit_id", 400);
+    }
+    if (orderIndex === null) {
+      return errorResponse("Lesson save requires a valid order_index", 400);
+    }
+
+    await getSql().begin(async (tx) => {
+      const existingLessonRows = await tx`
+        select id
+        from lessons
+        where id = ${lessonId}
+        limit 1
+      `;
+      if (!existingLessonRows[0]) {
+        throw new Error("Lesson not found");
+      }
+
+      await tx`
+        update lessons
+        set
+          title = ${String(body.title ?? "")},
+          unit_id = ${unitId},
+          order_index = ${orderIndex}
+        where id = ${lessonId}
+      `;
+
+      await tx`
+        delete from challenges
+        where lesson_id = ${lessonId}
+      `;
+
+      for (const [challengeIndex, challenge] of (body.challenges ?? []).entries()) {
+        const insertedChallenges = await tx`
+          insert into challenges (lesson_id, type, question, correct_text, audio_src, order_index)
+          values (
+            ${lessonId},
+            ${String(challenge.type ?? "SELECT")},
+            ${String(challenge.question ?? "")},
+            ${challenge.correct_text ? String(challenge.correct_text) : null},
+            ${challenge.audio_src ? String(challenge.audio_src) : null},
+            ${parseOptionalNumber(challenge.order_index) ?? challengeIndex + 1}
+          )
+          returning id
+        `;
+        const insertedChallengeId = Number(insertedChallenges[0].id);
+
+        for (const option of challenge.options ?? []) {
+          await tx`
+            insert into challenge_options (challenge_id, text, correct, image_src, audio_src)
+            values (
+              ${insertedChallengeId},
+              ${String(option.text ?? "")},
+              ${Boolean(option.correct ?? false)},
+              ${option.image_src ? String(option.image_src) : null},
+              ${option.audio_src ? String(option.audio_src) : null}
+            )
+          `;
+        }
+      }
+    });
+
+    const lesson = await getLesson(lessonId);
+    return lesson ? json(lesson) : errorResponse("Lesson not found", 404);
+  }
+
   if (slug[0] === "admin" && slug[1] === "content" && slug[2] === "courses" && slug.length === 3) {
     await requireAdmin(request);
-    const body = (await readJson(request)) as Record<string, unknown>;
+    const body = ((await readJson(request)) ?? {}) as Record<string, unknown>;
     const rows = await sql`
       insert into courses (title, description, image_src, order_index)
       values (
@@ -849,7 +1100,7 @@ async function handlePost(request: NextRequest, slug: string[]) {
 
   if (slug[0] === "admin" && slug[1] === "content" && slug[2] === "units" && slug.length === 3) {
     await requireAdmin(request);
-    const body = (await readJson(request)) as Record<string, unknown>;
+    const body = ((await readJson(request)) ?? {}) as Record<string, unknown>;
     const rows = await sql`
       insert into units (title, description, course_id, order_index)
       values (
@@ -1007,13 +1258,39 @@ async function handlePut(request: NextRequest, slug: string[]) {
     if (!lessonId) {
       return errorResponse("Invalid lesson id", 400);
     }
-    const body = (await readJson(request)) as Record<string, unknown>;
+    const body = ((await readJson(request)) ?? {}) as Record<string, unknown>;
+    const existingRows = await sql`
+      select *
+      from lessons
+      where id = ${lessonId}
+      limit 1
+    `;
+    const existing = existingRows[0] as Record<string, unknown> | undefined;
+    if (!existing) {
+      return errorResponse("Lesson not found", 404);
+    }
+    const nextTitle = hasOwn(body, "title") ? String(body.title ?? "") : String(existing.title ?? "");
+    const nextUnitId = hasOwn(body, "unit_id")
+      ? parseOptionalNumber(body.unit_id)
+      : parseOptionalNumber(existing.unit_id);
+    const nextOrderIndex = hasOwn(body, "order_index")
+      ? parseOptionalNumber(body.order_index)
+      : parseOptionalNumber(existing.order_index);
+
+    if (!nextUnitId) {
+      return errorResponse("Lesson update requires a valid unit_id", 400);
+    }
+
+    if (nextOrderIndex === null) {
+      return errorResponse("Lesson update requires a valid order_index", 400);
+    }
+
     const rows = await sql`
       update lessons
       set
-        title = ${String(body.title ?? "")},
-        unit_id = ${Number(body.unit_id)},
-        order_index = ${Number(body.order_index ?? 0)}
+        title = ${nextTitle},
+        unit_id = ${nextUnitId},
+        order_index = ${nextOrderIndex}
       where id = ${lessonId}
       returning *
     `;
@@ -1026,16 +1303,45 @@ async function handlePut(request: NextRequest, slug: string[]) {
     if (!challengeId) {
       return errorResponse("Invalid challenge id", 400);
     }
-    const body = (await readJson(request)) as Record<string, unknown>;
+    const body = ((await readJson(request)) ?? {}) as Record<string, unknown>;
+    const existingRows = await sql`
+      select *
+      from challenges
+      where id = ${challengeId}
+      limit 1
+    `;
+    const existing = existingRows[0] as Record<string, unknown> | undefined;
+    if (!existing) {
+      return errorResponse("Challenge not found", 404);
+    }
+    const nextLessonId = hasOwn(body, "lesson_id")
+      ? parseOptionalNumber(body.lesson_id)
+      : parseOptionalNumber(existing.lesson_id);
+    const nextOrderIndex = hasOwn(body, "order_index")
+      ? parseOptionalNumber(body.order_index)
+      : parseOptionalNumber(existing.order_index);
+
+    if (!nextLessonId) {
+      return errorResponse("Challenge update requires a valid lesson_id", 400);
+    }
+
+    if (nextOrderIndex === null) {
+      return errorResponse("Challenge update requires a valid order_index", 400);
+    }
+
     const rows = await sql`
       update challenges
       set
-        lesson_id = ${Number(body.lesson_id)},
-        type = ${String(body.type ?? "SELECT")},
-        question = ${String(body.question ?? "")},
-        correct_text = ${body.correct_text ? String(body.correct_text) : null},
-        audio_src = ${body.audio_src ? String(body.audio_src) : null},
-        order_index = ${Number(body.order_index ?? 0)}
+        lesson_id = ${nextLessonId},
+        type = ${hasOwn(body, "type") ? String(body.type ?? "SELECT") : String(existing.type ?? "SELECT")},
+        question = ${hasOwn(body, "question") ? String(body.question ?? "") : String(existing.question ?? "")},
+        correct_text = ${hasOwn(body, "correct_text")
+          ? (body.correct_text ? String(body.correct_text) : null)
+          : (existing.correct_text ? String(existing.correct_text) : null)},
+        audio_src = ${hasOwn(body, "audio_src")
+          ? (body.audio_src ? String(body.audio_src) : null)
+          : (existing.audio_src ? String(existing.audio_src) : null)},
+        order_index = ${nextOrderIndex}
       where id = ${challengeId}
       returning *
     `;
@@ -1133,20 +1439,39 @@ async function routeRequest(
 ) {
   try {
     const { slug } = await context.params;
+    await ensureAppSchema();
+    const shouldInvalidateAdminCache =
+      method !== "GET" && slug[0] === "admin" && slug[1] === "content";
 
     if (method === "GET") {
       return await handleGet(request, slug);
     }
     if (method === "POST") {
-      return await handlePost(request, slug);
+      const response = await handlePost(request, slug);
+      if (shouldInvalidateAdminCache) {
+        invalidateAdminCaches();
+      }
+      return response;
     }
     if (method === "PATCH") {
-      return await handlePatch(request, slug);
+      const response = await handlePatch(request, slug);
+      if (shouldInvalidateAdminCache) {
+        invalidateAdminCaches();
+      }
+      return response;
     }
     if (method === "PUT") {
-      return await handlePut(request, slug);
+      const response = await handlePut(request, slug);
+      if (shouldInvalidateAdminCache) {
+        invalidateAdminCaches();
+      }
+      return response;
     }
-    return await handleDelete(request, slug);
+    const response = await handleDelete(request, slug);
+    if (shouldInvalidateAdminCache) {
+      invalidateAdminCaches();
+    }
+    return response;
   } catch (error) {
     if (error instanceof Error) {
       if (error.message === "Unauthorized") {

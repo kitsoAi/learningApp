@@ -17,7 +17,14 @@ import Image from "next/image";
 export default function CoursesPage() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeCourseId, setActiveCourseId] = useState<number | null>(null);
+  const [brokenImages, setBrokenImages] = useState<Record<number, boolean>>({});
   const { user } = useAuthStore();
+
+  useEffect(() => {
+    const storedCourseId = window.localStorage.getItem("activeCourseId");
+    setActiveCourseId(storedCourseId ? Number(storedCourseId) : null);
+  }, []);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -42,11 +49,13 @@ export default function CoursesPage() {
     );
   }
 
-  // Use active course from store if available, or first course
-  const activeCourse = courses[0] || {
+  const selectedCourse =
+    courses.find((course) => course.id === activeCourseId) ||
+    courses[0] ||
+    {
     id: 1,
     title: "Select a course",
-    image_src: "/es.svg",
+    image_src: "/flags/bw.svg",
   };
 
   return (
@@ -54,15 +63,15 @@ export default function CoursesPage() {
       <StickyWrapper>
         <UserProgress
           activeCourse={{
-            title: activeCourse.title,
-            imageSrc: activeCourse.image_src || "/es.svg",
+            title: selectedCourse.title,
+            imageSrc: selectedCourse.image_src || "/flags/bw.svg",
           }}
           hearts={user.hearts}
           points={user.points}
           hasActiveSubscription={false}
         />
         <Promo />
-        <Quests points={user.points} />
+        <Quests points={user.points} streakCount={user.streak_count} />
       </StickyWrapper>
       <FeedWrapper>
         <div className="w-full flex flex-col items-center">
@@ -93,9 +102,19 @@ export default function CoursesPage() {
                 >
                   <div className="border-2 rounded-xl border-b-4 hover:bg-black/5 cursor-pointer active:border-b-2 flex flex-col items-center gap-3 p-6 pb-8 min-h-[217px] min-w-[200px] transition">
                     <div className="relative aspect-[4/3] w-[120px] rounded-lg overflow-hidden drop-shadow-md">
-                      {course.image_src && (
+                      {(course.image_src && !brokenImages[course.id]) ? (
                         <Image
                           src={formatAssetUrl(course.image_src) || ""}
+                          alt={course.title}
+                          fill
+                          className="object-cover"
+                          onError={() =>
+                            setBrokenImages((current) => ({ ...current, [course.id]: true }))
+                          }
+                        />
+                      ) : (
+                        <Image
+                          src="/flags/bw.svg"
                           alt={course.title}
                           fill
                           className="object-cover"

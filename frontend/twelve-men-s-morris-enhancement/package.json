@@ -1,0 +1,48 @@
+{
+  "name": "twelve-mens-morris",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "server:dev": "tsx watch server/index.ts",
+    "server:start": "tsx server/index.ts",
+    "lint": "next lint",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@radix-ui/react-label": "^2.1.8",
+    "@radix-ui/react-slider": "^1.1.2",
+    "@radix-ui/react-switch": "^1.0.3",
+    "@vercel/analytics": "^2.0.1",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "geist": "^1.7.0",
+    "lucide-react": "^0.294.0",
+    "next": "14.0.0",
+    "p5": "^1.7.0",
+    "react": "^18",
+    "react-dom": "^18",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "tailwind-merge": "^2.0.0",
+    "tailwindcss-animate": "^1.0.7"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.3",
+    "@types/node": "^20",
+    "@types/p5": "^1.7.6",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10.0.1",
+    "eslint": "^8",
+    "eslint-config-next": "14.0.0",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.17",
+    "tsx": "^4.20.6",
+    "typescript": "^5"
+  }
+}

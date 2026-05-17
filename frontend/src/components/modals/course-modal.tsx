@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { courseApi } from "@/lib/api/courses";
 import { Course } from "@/types/api";
 import { formatAssetUrl } from "@/lib/utils";
+import { resizeImageToAspect } from "@/lib/image";
 
 interface CourseModalProps {
   open: boolean;
@@ -45,7 +47,8 @@ export const CourseModal = ({ open, onOpenChange, onSubmit, initialData }: Cours
 
       setUploading(true);
       try {
-          const { url } = await courseApi.uploadFile(file);
+          const resizedFile = await resizeImageToAspect(file, 1200, 900);
+          const { url } = await courseApi.uploadFile(resizedFile);
           setImageSrc(url);
       } catch (error) {
           console.error("Failed to upload image", error);
@@ -125,12 +128,16 @@ export const CourseModal = ({ open, onOpenChange, onSubmit, initialData }: Cours
                     />
                 </Button>
             </div>
+            <p className="text-xs text-neutral-500">
+              Uploaded course images are automatically center-cropped to a 4:3 card ratio so they fit the app layout.
+            </p>
             {imageSrc && (
               <div className="mt-2 relative w-[120px] aspect-[4/3] rounded-md overflow-hidden border">
-                <img 
+                <Image 
                   src={formatAssetUrl(imageSrc) || ""} 
                   alt="Preview" 
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
                 />
               </div>
             )}

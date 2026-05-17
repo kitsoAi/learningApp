@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 
@@ -10,14 +9,14 @@ export const Promo = () => {
         <div className="flex items-center gap-x-2">
           <Image src="/unlimited.svg" alt="Pro" height={26} width={26} />
 
-          <h3 className="text-lg font-bold">Upgrade to Pro</h3>
+          <h3 className="text-lg font-bold">Pro Coming Soon</h3>
         </div>
 
-        <p className="text-muted-foreground">Get unlimited hearts and more!</p>
+        <p className="text-muted-foreground">Unlimited hearts and premium perks will be added in a future update.</p>
       </div>
 
-      <Button variant="super" className="w-full" size="lg" asChild>
-        <Link href="/shop">Upgrade today</Link>
+      <Button variant="super" className="w-full" size="lg" disabled>
+        Coming Soon
       </Button>
     </div>
   );

@@ -1,0 +1,229 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import { Gamepad2, RotateCcw, Sparkles, Swords, Volume2, VolumeX } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getSharedAudioContext } from "@/lib/audio";
+import {
+  BOARD_POINTS,
+  CONNECTIONS,
+  applyHumanAction,
+  createInitialState,
+  getLegalMoves,
+  getRemovablePoints,
+  type MorrisState,
+} from "@/lib/games/twelve-mens-morris";
+
+function playTone(enabled: boolean, frequency: number, duration = 0.12) {
+  if (!enabled || typeof window === "undefined") {
+    return;
+  }
+
+  const context = getSharedAudioContext();
+  if (!context) {
+    return;
+  }
+  if (context.state === "suspended") {
+    context.resume().catch(() => {});
+  }
+  const oscillator = context.createOscillator();
+  const gain = context.createGain();
+  oscillator.connect(gain);
+  gain.connect(context.destination);
+  oscillator.type = "sine";
+  oscillator.frequency.value = frequency;
+  gain.gain.value = 0.03;
+  oscillator.start();
+  oscillator.stop(context.currentTime + duration);
+}
+
+export function TwelveMensMorrisGame() {
+  const [soundOn, setSoundOn] = useState(true);
+  const [state, setState] = useState<MorrisState>(() => createInitialState());
+
+  const highlightedPoints = useMemo(() => {
+    if (state.removingPiece) {
+      return getRemovablePoints(state.board, state.currentPlayer === 1 ? 2 : 1);
+    }
+    if (state.phase === "movement" && state.selectedPoint !== null) {
+      return getLegalMoves(state, state.selectedPoint);
+    }
+    return state.board
+      .map((piece, index) => ({ piece, index }))
+      .filter(({ piece }) => state.phase === "placement" ? piece === 0 : piece === state.currentPlayer)
+      .map(({ index }) => index);
+  }, [state]);
+
+  const onPointClick = (point: number) => {
+    const result = applyHumanAction(state, point);
+    if (!result.changed) {
+      return;
+    }
+    playTone(soundOn, result.nextState.removingPiece ? 660 : 440);
+    setState(result.nextState);
+  };
+
+  return (
+    <div className="space-y-8">
+      <div className="rounded-[2rem] border border-emerald-100 bg-[radial-gradient(circle_at_top_left,_rgba(187,247,208,0.7),_rgba(255,255,255,1)_55%)] p-8 shadow-sm">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-2xl">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.24em] text-emerald-700">Setswana Games</p>
+            <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Play Twelve Men&apos;s Morris inside Puolingo</h1>
+            <p className="mt-3 text-base font-medium text-slate-600">
+              Keep the learning platform open and jump straight into a classic local two-player strategy game inspired by regional play traditions.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Button variant="secondary" onClick={() => setState(createInitialState())}>
+              <Swords className="mr-2 h-4 w-4" />
+              New Two-Player Match
+            </Button>
+            <Button variant="outline" onClick={() => setSoundOn((value) => !value)}>
+              {soundOn ? <Volume2 className="mr-2 h-4 w-4" /> : <VolumeX className="mr-2 h-4 w-4" />}
+              {soundOn ? "Sound On" : "Sound Off"}
+            </Button>
+            <Button variant="outline" onClick={() => setState(createInitialState())}>
+              <RotateCcw className="mr-2 h-4 w-4" />
+              Restart
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
+        <Card className="overflow-hidden rounded-[2rem] border-slate-200 shadow-sm">
+          <CardContent className="p-4 sm:p-6">
+            <div className="mx-auto max-w-[720px] rounded-[1.75rem] bg-slate-950 p-4 sm:p-6">
+              <svg viewBox="0 0 100 100" className="aspect-square w-full">
+                {CONNECTIONS.map(([from, to]) => (
+                  <line
+                    key={`${from}-${to}`}
+                    x1={BOARD_POINTS[from].x}
+                    y1={BOARD_POINTS[from].y}
+                    x2={BOARD_POINTS[to].x}
+                    y2={BOARD_POINTS[to].y}
+                    stroke="#94a3b8"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
+                ))}
+                {BOARD_POINTS.map((point, index) => {
+                  const piece = state.board[index];
+                  const isSelected = state.selectedPoint === index;
+                  const isHighlighted = highlightedPoints.includes(index);
+                  const isEmpty = piece === 0;
+                  return (
+                    <g key={index}>
+                      {isHighlighted ? (
+                        <circle cx={point.x} cy={point.y} r="5.8" fill={state.removingPiece ? "rgba(248,113,113,0.25)" : "rgba(74,222,128,0.26)"} />
+                      ) : null}
+                      {isEmpty ? (
+                        <>
+                          <circle
+                            cx={point.x}
+                            cy={point.y}
+                            r="2.15"
+                            fill="#dbe4f3"
+                            stroke={isHighlighted ? "#4ade80" : "#334155"}
+                            strokeWidth={isHighlighted ? "0.95" : "0.75"}
+                            className="cursor-pointer"
+                            onClick={() => onPointClick(index)}
+                          />
+                          <circle
+                            cx={point.x}
+                            cy={point.y}
+                            r="0.82"
+                            fill={isHighlighted ? "#86efac" : "#0f172a"}
+                            pointerEvents="none"
+                          />
+                        </>
+                      ) : (
+                      <circle
+                        cx={point.x}
+                        cy={point.y}
+                        r="3.8"
+                        fill={piece === 1 ? "#38bdf8" : "#fb7185"}
+                        stroke={isSelected ? "#fde047" : "#0f172a"}
+                        strokeWidth={isSelected ? "1.4" : "1"}
+                        className="cursor-pointer"
+                        onClick={() => onPointClick(index)}
+                      />
+                      )}
+                      {piece !== 0 ? (
+                        <circle
+                          cx={point.x - 0.7}
+                          cy={point.y - 0.7}
+                          r="1.25"
+                          fill={piece === 1 ? "#e0f2fe" : "#ffe4e6"}
+                          pointerEvents="none"
+                        />
+                      ) : null}
+                    </g>
+                  );
+                })}
+              </svg>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="space-y-6">
+          <Card className="rounded-[2rem] border-slate-200 shadow-sm">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-xl font-extrabold text-slate-900">
+                <Gamepad2 className="h-5 w-5 text-emerald-600" />
+                Match Status
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="outline">Local Versus</Badge>
+                <Badge variant="outline">{state.phase === "placement" ? "Placement Phase" : "Movement Phase"}</Badge>
+                {state.gameOver ? (
+                  <Badge variant={state.winner === 1 ? "secondary" : "destructive"}>
+                    {`Player ${state.winner} Wins`}
+                  </Badge>
+                ) : (
+                  <Badge variant={state.currentPlayer === 1 ? "secondary" : "default"}>
+                    {`Player ${state.currentPlayer} Turn`}
+                  </Badge>
+                )}
+              </div>
+              <p className="text-sm font-medium leading-6 text-slate-600">{state.lastAction}</p>
+              <div className="grid gap-3">
+                <div className="rounded-2xl bg-sky-50 p-4">
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-sky-700">Player One</p>
+                  <p className="mt-2 text-sm font-semibold text-slate-700">Pieces to place: {state.unplacedPieces[0]}</p>
+                  <p className="text-sm font-semibold text-slate-700">Pieces on board: {state.boardPieces[0]}</p>
+                </div>
+                <div className="rounded-2xl bg-rose-50 p-4">
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-rose-700">Player Two</p>
+                  <p className="mt-2 text-sm font-semibold text-slate-700">Pieces to place: {state.unplacedPieces[1]}</p>
+                  <p className="text-sm font-semibold text-slate-700">Pieces on board: {state.boardPieces[1]}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-[2rem] border-slate-200 shadow-sm">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-xl font-extrabold text-slate-900">
+                <Sparkles className="h-5 w-5 text-amber-500" />
+                Game Notes
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm font-medium leading-6 text-slate-600">
+              <p>Players first place all 12 pieces one at a time. Every line of three forms a mill and lets you remove an opposing piece.</p>
+              <p>Once all pieces are placed, select one of your pieces and move it along a connected line to an empty point.</p>
+              <p>If you are reduced to three pieces, you can jump to any empty point on the board.</p>
+              <p>Win by reducing your opponent below three active pieces or by blocking every legal move.</p>
+              <p>This version is local two-player only for now, so both players take turns on the same device.</p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}

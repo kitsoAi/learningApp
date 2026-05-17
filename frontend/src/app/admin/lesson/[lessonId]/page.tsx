@@ -25,14 +25,14 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { lessonApi, courseApi } from "@/lib/api/courses";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Challenge, ChallengeOption } from "@/types/api";
+import { Challenge, ChallengeOption, Lesson } from "@/types/api";
 
 export default function LessonEditorPage() {
   const params = useParams();
   const lessonId = parseInt(params.lessonId as string);
   const router = useRouter();
 
-  const [lesson, setLesson] = useState<{ title: string } | null>(null);
+  const [lesson, setLesson] = useState<Lesson | null>(null);
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -83,77 +83,43 @@ export default function LessonEditorPage() {
   };
 
   const handleUpdateLessonTitle = async (title: string) => {
-      setLesson({ ...lesson, title });
+      setLesson((current) => (current ? { ...current, title } : current));
   };
 
   const handleSave = async () => {
       if (!lesson) return;
       setSaving(true);
       try {
-          // 1. Update Lesson Details
-          await lessonApi.updateLesson(lessonId, { title: lesson.title });
-
-          // 2. Update/Create Challenges & Options
-          // This is a simplified approach. Ideally we blindly update all or track dirty state.
-          // For now, let's just iterate and update everything to ensure consistency.
-          
-          for (const challenge of challenges) {
-              if (challenge.id < 0) {
-                   // New challenge (dummy ID) - Create it
-                   const newChallenge = await lessonApi.createChallenge({
-                       lesson_id: lessonId,
-                       question: challenge.question,
-                       type: challenge.type,
-                       correct_text: challenge.correct_text,
-                       audio_src: challenge.audio_src,
-                       order_index: challenge.order_index
-                   });
-                   // Options for new challenge?
-                   for (const option of challenge.options || []) {
-                       await lessonApi.createOption(newChallenge.id, {
-                           text: option.text,
-                           correct: option.correct,
-                           image_src: option.image_src,
-                           audio_src: option.audio_src
-                       });
-                   }
-              } else {
-                  // Existing challenge - Update it
-                  await lessonApi.updateChallenge(challenge.id, {
-                      question: challenge.question,
-                      type: challenge.type,
-                      correct_text: challenge.correct_text,
-                      audio_src: challenge.audio_src,
-                  });
-
-                  // Handle Options
-                  for (const option of challenge.options || []) {
-                      if (option.id < 0) {
-                           // New option
-                           await lessonApi.createOption(challenge.id, {
-                               text: option.text,
-                               correct: option.correct,
-                               image_src: option.image_src,
-                               audio_src: option.audio_src
-                           });
-                      } else {
-                          // Existing option
-                          await lessonApi.updateOption(option.id, {
-                               text: option.text,
-                               correct: option.correct,
-                               image_src: option.image_src,
-                               audio_src: option.audio_src
-                          });
-                      }
-                  }
-              }
-          }
+          await lessonApi.saveLessonTree(lessonId, {
+              title: lesson.title,
+              unit_id: lesson.unit_id,
+              order_index: lesson.order_index,
+              challenges: challenges.map((challenge, challengeIndex) => ({
+                  id: challenge.id > 0 ? challenge.id : undefined,
+                  lesson_id: lessonId,
+                  question: challenge.question,
+                  type: challenge.type,
+                  correct_text: challenge.correct_text,
+                  audio_src: challenge.audio_src,
+                  order_index: challenge.order_index ?? challengeIndex + 1,
+                  options: (challenge.options || []).map((option) => ({
+                      id: option.id > 0 ? option.id : undefined,
+                      text: option.text,
+                      correct: option.correct,
+                      image_src: option.image_src,
+                      audio_src: option.audio_src,
+                  })),
+              })),
+          });
           
           toast.success("Lesson saved successfully");
           fetchLessonData(); // Refresh to clean up temp IDs/states
       } catch (error) {
           console.error("Failed to save", error);
-          toast.error("Failed to save changes");
+          const message =
+            (error as { response?: { data?: { detail?: string } } }).response?.data?.detail ||
+            (error instanceof Error ? error.message : "Failed to save changes");
+          toast.error(message);
       } finally {
           setSaving(false);
       }

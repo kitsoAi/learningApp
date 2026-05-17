@@ -12,33 +12,35 @@ type AdminProviderProps = {
 export const AdminProvider = ({ children }: AdminProviderProps) => {
   const router = useRouter();
   const pathname = usePathname();
-  const { user, isAuthenticated, isLoading, fetchUser } = useAuthStore();
+  const { user, isAuthenticated, fetchUser } = useAuthStore();
   const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
     const checkAuth = async () => {
-      // If we're on the login page, don't redirect or check strict admin yet
       if (pathname === "/admin/login") {
         setIsChecking(false);
         return;
       }
 
-      // If not authenticated, try to fetch user (maybe persisted token)
-      if (!isAuthenticated) {
+      if (user?.is_admin) {
+        setIsChecking(false);
+        return;
+      }
+
+      if (!isAuthenticated || !user) {
         try {
           await fetchUser();
-        } catch (error) {
-           // Fetch failed, distinct from just not being logged in
+        } catch {
+          // Ignore; redirect effect below will handle non-admin or missing session.
         }
       }
-      
+
       setIsChecking(false);
     };
 
     checkAuth();
-  }, [isAuthenticated, pathname, fetchUser]);
+  }, [isAuthenticated, pathname, fetchUser, user]);
 
-  // Effect to handle redirection after check is done
   useEffect(() => {
       if (isChecking) return;
       if (pathname === "/admin/login") return;
@@ -46,7 +48,7 @@ export const AdminProvider = ({ children }: AdminProviderProps) => {
       if (!isAuthenticated || !user) {
           router.push("/admin/login");
       } else if (!user.is_admin) {
-          router.push("/learn"); // Or some "unauthorized" page
+          router.push("/learn");
       }
   }, [isChecking, isAuthenticated, user, router, pathname]);
 
@@ -59,12 +61,10 @@ export const AdminProvider = ({ children }: AdminProviderProps) => {
     );
   }
   
-  // If not checking, and on login page, render children
   if (pathname === "/admin/login") {
       return <>{children}</>;
   }
 
-  // Guard: If not admin (and not on login page), don't render content (effect will redirect)
   if (!isAuthenticated || !user?.is_admin) {
       return null; 
   }

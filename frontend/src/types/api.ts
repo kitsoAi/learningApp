@@ -33,6 +33,7 @@ export interface AuthResponse {
   access_token: string;
   token_type: string;
   refresh_token: string;
+  user?: User;
 }
 
 // Course types
@@ -98,6 +99,29 @@ export interface ChallengeOption {
   audio_src: string | null;
 }
 
+export interface LessonSavePayload {
+  title: string;
+  unit_id: number;
+  order_index: number;
+  challenges: Array<{
+    id?: number;
+    lesson_id?: number;
+    type: ChallengeType;
+    question: string;
+    correct_text?: string;
+    audio_src?: string;
+    order_index: number;
+    options: Array<{
+      id?: number;
+      challenge_id?: number;
+      text: string;
+      correct: boolean;
+      image_src: string | null;
+      audio_src: string | null;
+    }>;
+  }>;
+}
+
 // Progress types
 export interface UserProgress {
   id: number;
@@ -127,4 +151,12 @@ export interface Quest {
 
 export interface QuestProgress extends Quest {
   completed: boolean;
+}
+
+export interface LeaderboardEntry {
+  id: number;
+  full_name?: string | null;
+  email: string;
+  image_src?: string | null;
+  xp: number;
 }

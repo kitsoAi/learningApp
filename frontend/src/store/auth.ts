@@ -32,8 +32,7 @@ export const useAuthStore = create<AuthState>()(
           const response = await authApi.login(credentials);
           localStorage.setItem('access_token', response.access_token);
           localStorage.setItem('refresh_token', response.refresh_token);
-
-          const user = await userApi.getMe();
+          const user = response.user ?? await userApi.getMe();
           set({ user, isAuthenticated: true, isLoading: false });
         } catch (error: unknown) {
           console.error("Login attempt failed:", error);
@@ -53,8 +52,7 @@ export const useAuthStore = create<AuthState>()(
           const response = await authApi.login({ username: data.email, password: data.password });
           localStorage.setItem('access_token', response.access_token);
           localStorage.setItem('refresh_token', response.refresh_token);
-
-          const user = await userApi.getMe();
+          const user = response.user ?? await userApi.getMe();
           set({ user, isAuthenticated: true, isLoading: false });
         } catch (error: unknown) {
           console.error(error);

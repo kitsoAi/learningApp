@@ -11,14 +11,9 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { useAuthStore } from "@/store/auth";
 import { useCourseStore } from "@/store/course";
-import { apiClient } from "@/lib/api"; 
+import { leaderboardApi } from "@/lib/api/courses";
 import { formatAssetUrl } from "@/lib/utils";
-
-// Quick API call within component for now, or move to lib/api
-const getLeaderboard = async () => {
-    const res = await apiClient.get('/leaderboard');
-    return res.data;
-};
+import type { LeaderboardEntry } from "@/types/api";
 
 export default function LeaderboardPage() {
   const { user } = useAuthStore();
@@ -26,41 +21,46 @@ export default function LeaderboardPage() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
-  interface LeaderboardEntry {
-    id: number;
-    full_name?: string;
-    email: string;
-    image_src?: string;
-    xp: number;
-  }
-
   useEffect(() => {
-    if (!user || !activeCourse) {
-       // redirect('/courses'); // optional
+    if (!user) {
+      setLoading(false);
+      return;
     }
-    
-    getLeaderboard().then(data => {
-        setLeaderboard(data);
-        setLoading(false);
-    });
-  }, [user, activeCourse]);
 
-  if (!user || !activeCourse) return null; // or loading spinner
+    leaderboardApi
+      .getLeaderboard()
+      .then((data) => {
+        setLeaderboard(data);
+      })
+      .catch(() => {
+        setLeaderboard([]);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [user]);
+
+  if (!user) return null;
+
+  const sidebarCourse = activeCourse ?? {
+    title: "Setswana",
+    image_src: "/flags/bw.svg",
+  };
 
   return (
     <div className="flex flex-row-reverse gap-[48px] px-6">
       <StickyWrapper>
         <UserProgress
           activeCourse={{
-             title: activeCourse.title,
-             imageSrc: activeCourse.image_src || "/es.svg",
+             title: sidebarCourse.title,
+             imageSrc: sidebarCourse.image_src || "/flags/bw.svg",
           }}
           hearts={user.hearts}
           points={user.points}
           hasActiveSubscription={false}
         />
         <Promo />
-        <Quests points={user.points} />
+        <Quests points={user.points} streakCount={user.streak_count} />
       </StickyWrapper>
       <FeedWrapper>
         <div className="w-full flex flex-col items-center">

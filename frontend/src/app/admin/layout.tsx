@@ -1,7 +1,6 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { MobileHeader } from "@/components/mobile-header";
 import { AdminProvider } from "@/components/providers/admin-provider";
 import { AdminSidebar } from "@/components/admin-sidebar";
 import { cn } from "@/lib/utils";

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { toast } from "sonner";
 import { Camera, Loader2 } from "lucide-react";
@@ -22,7 +22,7 @@ import { Flame } from "lucide-react";
 import { formatAssetUrl } from "@/lib/utils";
 
 export default function ProfilePage() {
-  const { user, updateUser } = useAuthStore();
+  const { user, updateUser, fetchUser, isLoading } = useAuthStore();
   const { activeCourse } = useCourseStore();
   
   const [isEditing, setIsEditing] = useState(false);
@@ -30,9 +30,39 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  if (!user || !activeCourse) {
-     return null;
+  useEffect(() => {
+    if (user?.full_name) {
+      setFullName(user.full_name);
+    } else if (!user?.full_name) {
+      setFullName("");
+    }
+  }, [user?.full_name]);
+
+  useEffect(() => {
+    if (!user) {
+      fetchUser().catch(() => {
+        // Main layout handles auth redirects; profile page just avoids crashing on first paint.
+      });
+    }
+  }, [user, fetchUser]);
+
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center py-16">
+        <Loader2 className="h-6 w-6 animate-spin text-neutral-400" />
+      </div>
+    );
   }
+
+  const sidebarCourse = activeCourse
+    ? {
+        title: activeCourse.title,
+        imageSrc: activeCourse.image_src || "/flags/bw.svg",
+      }
+    : {
+        title: "Setswana",
+        imageSrc: "/flags/bw.svg",
+      };
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -74,16 +104,13 @@ export default function ProfilePage() {
     <div className="flex flex-row-reverse gap-[48px] px-6">
       <StickyWrapper>
         <UserProgress
-          activeCourse={{
-             title: activeCourse.title,
-             imageSrc: activeCourse.image_src || "/es.svg",
-          }}
+          activeCourse={sidebarCourse}
           hearts={user.hearts}
           points={user.points}
           hasActiveSubscription={false}
         />
         <Promo />
-        <Quests points={user.points} />
+        <Quests points={user.points} streakCount={user.streak_count} />
       </StickyWrapper>
       <FeedWrapper>
         <div className="w-full flex flex-col items-center">
@@ -157,6 +184,7 @@ export default function ProfilePage() {
                         variant="primaryOutline" 
                         size="sm" 
                         className="mt-6 font-bold"
+                        disabled={isLoading}
                         onClick={() => setIsEditing(true)}
                       >
                         Edit Profile

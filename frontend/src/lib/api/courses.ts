@@ -1,5 +1,5 @@
 import apiClient from '../api';
-import type { Course, Unit, Lesson, Challenge, ChallengeOption } from '@/types/api';
+import type { Course, Unit, Lesson, Challenge, ChallengeOption, LessonSavePayload, LeaderboardEntry } from '@/types/api';
 
 export const courseApi = {
   // Get all courses
@@ -82,6 +82,11 @@ export const lessonApi = {
     return response.data;
   },
 
+  saveLessonTree: async (lessonId: number, data: LessonSavePayload): Promise<Lesson> => {
+    const response = await apiClient.post<Lesson>(`/admin/content/lessons/${lessonId}/save`, data);
+    return response.data;
+  },
+
   // Update a challenge
   updateChallenge: async (challengeId: number, data: Partial<Challenge>): Promise<Challenge> => {
     const response = await apiClient.put<Challenge>(`/admin/content/challenges/${challengeId}`, data);
@@ -156,6 +161,18 @@ export const questApi = {
 export const adminApi = {
   getAnalytics: async () => {
     const response = await apiClient.get('/admin/analytics');
+    return response.data;
+  },
+
+  getCourseTree: async (): Promise<Course[]> => {
+    const response = await apiClient.get<Course[]>('/admin/content/tree');
+    return response.data;
+  },
+};
+
+export const leaderboardApi = {
+  getLeaderboard: async (): Promise<LeaderboardEntry[]> => {
+    const response = await apiClient.get<LeaderboardEntry[]>('/leaderboard');
     return response.data;
   },
 };

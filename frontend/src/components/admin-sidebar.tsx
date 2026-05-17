@@ -53,11 +53,15 @@ export const AdminSidebar = ({ className }: AdminSidebarProps) => {
                 Analytics
             </Button>
         </Link>
-        {/* Placeholder for future expansion */}
-        <Button variant="ghost" className="w-full justify-start gap-4 text-slate-400 hover:text-white hover:bg-slate-800 cursor-not-allowed opacity-50">
-            <BookOpen className="h-5 w-5" />
-            Courses (Soon)
-        </Button>
+        <Link href="/admin/courses">
+            <Button 
+                variant={pathname === "/admin/courses" ? "secondary" : "ghost"} 
+                className={cn("w-full justify-start gap-4", pathname !== "/admin/courses" && "text-slate-400 hover:text-white hover:bg-slate-800")}
+            >
+                <BookOpen className="h-5 w-5" />
+                Courses
+            </Button>
+        </Link>
       </div>
 
       <div className="p-4 border-t border-slate-800">
